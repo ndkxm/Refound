@@ -49,6 +49,41 @@ const config: ExpoConfig = {
         imageWidth: 76,
       },
     ],
+    'expo-secure-store',
+    [
+      'expo-audio',
+      { microphonePermission: 'Ví Lười dùng micro để bạn ghi khoản chi bằng giọng nói.' },
+    ],
+    [
+      'expo-camera',
+      {
+        cameraPermission: 'Ví Lười dùng camera để chụp hóa đơn và quét mã QR nhóm.',
+        microphonePermission: false,
+        recordAudioAndroid: false,
+      },
+    ],
+    [
+      'expo-image-picker',
+      {
+        photosPermission: 'Ví Lười đọc ảnh bạn chọn để lấy thông tin chuyển khoản.',
+        cameraPermission: 'Ví Lười dùng camera để chụp hóa đơn.',
+        // Không đặt microphonePermission: false: plugin sẽ chặn RECORD_AUDIO của cả app, hỏng ghi giọng nói.
+      },
+    ],
+    [
+      'expo-location',
+      {
+        locationWhenInUsePermission: 'Ví Lười gắn vị trí vào khoản chi để vẽ bản đồ chi tiêu.',
+        locationAlwaysAndWhenInUsePermission:
+          'Ví Lười dùng vị trí khi chạy nền để nhắc bạn lúc đến vùng hay tiêu nhiều tiền.',
+        // Geofence (F32) cần vị trí nền trên Android.
+        isAndroidBackgroundLocationEnabled: true,
+      },
+    ],
+    'expo-task-manager',
+    // Key Google Maps cho Android: biến môi trường lúc build (EAS), không phải biến EXPO_PUBLIC_.
+    // Đổi key thì phải build lại dev build.
+    ['react-native-maps', { androidGoogleMapsApiKey: process.env.GOOGLE_MAPS_ANDROID_API_KEY }],
   ],
   experiments: {
     typedRoutes: true,

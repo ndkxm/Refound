@@ -15,8 +15,8 @@ App quản lý chi tiêu cho người lười nhập: ghi bằng giọng nói, �
 ## Chạy dự án
 
 ```bash
-git clone https://github.com/ndkxm/rewind.git
-cd rewind
+git clone https://github.com/ndkxm/ViLuoi.git
+cd ViLuoi
 npm install
 cp .env.example .env   # rồi điền EXPO_PUBLIC_SUPABASE_URL và EXPO_PUBLIC_SUPABASE_ANON_KEY
 npm start
