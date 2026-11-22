@@ -1,3 +1,32 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Biến màu cho className (bg-paper, text-ink…). Giá trị PHẢI khớp palette trong src/theme/colors.ts,
+   colors.test.ts kiểm tra việc này. Đặt ở :root thay vì vars() trên View gốc: vars() không tới được
+   mọi màn trên Android (chữ rơi về màu đen) và lệch khi hydrate trên web. */
+:root {
+  --color-paper: 244 246 250;
+  --color-surface: 255 255 255;
+  --color-ink: 11 18 32;
+  --color-muted: 71 85 105;
+  --color-line: 217 224 235;
+  --color-primary: 29 78 216;
+  --color-accent: 4 120 87;
+  --color-warning: 180 83 9;
+  --color-danger: 185 28 28;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-paper: 11 16 32;
+    --color-surface: 21 27 46;
+    --color-ink: 241 245 249;
+    --color-muted: 165 177 198;
+    --color-line: 38 48 73;
+    --color-primary: 138 176 255;
+    --color-accent: 74 222 154;
+    --color-warning: 251 191 36;
+    --color-danger: 255 142 134;
+  }
+}

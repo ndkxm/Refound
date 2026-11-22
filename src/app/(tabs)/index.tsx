@@ -6,6 +6,7 @@ export default function TodayScreen() {
 
   return (
     <PlaceholderScreen
+      icon="home"
       owner="V25 · TV5"
       title="Hôm nay"
       description="Số tiền còn được tiêu hôm nay, các khoản đã ghi trong ngày và nút mic để ghi nhanh."

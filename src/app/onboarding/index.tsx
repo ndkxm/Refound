@@ -7,6 +7,7 @@ export default function OnboardingScreen() {
 
   return (
     <PlaceholderScreen
+      icon="wallet"
       owner="V09 · TV1"
       title="Thiết lập tài chính"
       description="Bốn bước ngắn: cách nhận thu nhập, ngày nhận tiền, các khoản cố định và số tiền muốn để dành mỗi tháng."

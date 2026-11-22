@@ -1,5 +1,15 @@
 // Tên token khớp src/theme/colors.ts; giá trị thật nằm ở đó, đặt qua CSS variable nên tự đổi theo sáng/tối.
-const tokens = ['paper', 'surface', 'ink', 'muted', 'line', 'accent', 'warning', 'danger'];
+const tokens = [
+  'paper',
+  'surface',
+  'ink',
+  'muted',
+  'line',
+  'primary',
+  'accent',
+  'warning',
+  'danger',
+];
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {

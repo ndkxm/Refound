@@ -1,4 +1,19 @@
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+
 import { palette, toRgb } from './colors';
+
+describe('global.css', () => {
+  const css = readFileSync(join(__dirname, '..', 'global.css'), 'utf8');
+  const darkStart = css.indexOf('@media (prefers-color-scheme: dark)');
+
+  it.each(['light', 'dark'] as const)('biến CSS %s khớp palette', (scheme) => {
+    const block = scheme === 'light' ? css.slice(0, darkStart) : css.slice(darkStart);
+    for (const [token, value] of Object.entries(palette[scheme])) {
+      expect(block).toContain(`--color-${token}: ${value};`);
+    }
+  });
+});
 
 describe('palette', () => {
   it('chế độ tối có đủ đúng các token của chế độ sáng', () => {

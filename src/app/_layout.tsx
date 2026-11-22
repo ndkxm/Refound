@@ -8,7 +8,6 @@ import { View } from 'react-native';
 
 import RootNavigator from '@/features/auth/components/root-navigator';
 import { useSessionStore } from '@/stores/session-store';
-import { themeVars } from '@/theme/colors';
 import { useColorSchemeName, useThemeColors } from '@/theme/use-theme-colors';
 
 // Giữ splash đến khi biết phiên đăng nhập, để không nháy qua màn sai.
@@ -34,7 +33,7 @@ export default function RootLayout() {
       ...base,
       colors: {
         ...base.colors,
-        primary: colors.accent,
+        primary: colors.primary,
         background: colors.paper,
         card: colors.paper,
         text: colors.ink,
@@ -44,7 +43,7 @@ export default function RootLayout() {
   }, [scheme, colors]);
 
   return (
-    <View style={themeVars[scheme]} className="flex-1 bg-paper">
+    <View className="flex-1 bg-paper">
       <ThemeProvider value={navigationTheme}>
         <RootNavigator />
       </ThemeProvider>
