@@ -17,18 +17,18 @@ type Props = {
 /** Màn tạm có chủ đích: nói rõ màn này sẽ có gì và ai làm. Thay bằng màn thật khi làm việc tương ứng. */
 export function PlaceholderScreen({ title, description, owner, devActions = [], children }: Props) {
   return (
-    <SafeAreaView edges={['top']} className="bg-paper flex-1">
+    <SafeAreaView edges={['top']} className="flex-1 bg-paper">
       <ScrollView contentContainerClassName="grow px-6 pb-10 pt-10">
-        <Text className="text-muted text-xs font-semibold uppercase tracking-widest">{owner}</Text>
-        <Text className="text-ink mt-3 text-4xl font-bold" accessibilityRole="header">
+        <Text className="text-xs font-semibold uppercase tracking-widest text-muted">{owner}</Text>
+        <Text className="mt-3 text-4xl font-bold text-ink" accessibilityRole="header">
           {title}
         </Text>
-        <Text className="text-muted mt-3 text-base leading-6">{description}</Text>
+        <Text className="mt-3 text-base leading-6 text-muted">{description}</Text>
 
         {/* Dòng kẻ như trang sổ còn trống. */}
         <View className="mt-8 gap-7" accessibilityElementsHidden importantForAccessibility="no">
           {[0, 1, 2, 3].map((i) => (
-            <View key={i} className="bg-line h-px" />
+            <View key={i} className="h-px bg-line" />
           ))}
         </View>
 
@@ -36,15 +36,15 @@ export function PlaceholderScreen({ title, description, owner, devActions = [], 
 
         {__DEV__ && devActions.length > 0 ? (
           <View className="mt-auto gap-3 pt-10">
-            <Text className="text-muted text-xs">Chỉ hiện khi chạy dev</Text>
+            <Text className="text-xs text-muted">Chỉ hiện khi chạy dev</Text>
             {devActions.map((action) => (
               <Pressable
                 key={action.label}
                 onPress={action.onPress}
                 accessibilityRole="button"
-                className="border-line active:bg-line min-h-12 items-center justify-center rounded-full border px-5"
+                className="min-h-12 items-center justify-center rounded-full border border-line px-5 active:bg-line"
               >
-                <Text className="text-ink text-base font-medium">{action.label}</Text>
+                <Text className="text-base font-medium text-ink">{action.label}</Text>
               </Pressable>
             ))}
           </View>

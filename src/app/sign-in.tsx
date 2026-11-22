@@ -17,8 +17,8 @@ export default function SignInScreen() {
         { label: 'Vào thử, đã onboarding', onPress: () => signIn(true) },
       ]}
     >
-      <Link href="/sign-up" className="text-muted py-2 text-base">
-        Chưa có tài khoản? <Text className="text-ink font-semibold">Đăng ký</Text>
+      <Link href="/sign-up" className="py-2 text-base text-muted">
+        Chưa có tài khoản? <Text className="font-semibold text-ink">Đăng ký</Text>
       </Link>
     </PlaceholderScreen>
   );
