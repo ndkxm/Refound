@@ -3,7 +3,7 @@ import '../global.css';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 
-// Khung điều hướng (auth / onboarding / tabs) là việc V06.
+// TODO: khung điều hướng (auth / onboarding / tabs) sẽ thay màn tạm này.
 export default function RootLayout() {
   return (
     <>

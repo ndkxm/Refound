@@ -14,18 +14,18 @@ const googleServicesFile =
 
 const config: ExpoConfig = {
   name: 'Refound',
-  slug: 'vi-luoi',
+  slug: 'refound',
   version: '1.0.0',
   orientation: 'portrait',
   icon: './assets/images/icon.png',
-  scheme: 'viluoi',
+  scheme: 'refound',
   userInterfaceStyle: 'automatic',
   ios: {
     icon: './assets/expo.icon',
-    bundleIdentifier: 'com.viluoi.app',
+    bundleIdentifier: 'com.refound.app',
   },
   android: {
-    package: 'com.viluoi.app',
+    package: 'com.refound.app',
     googleServicesFile,
     adaptiveIcon: {
       backgroundColor: '#E6F4FE',
@@ -54,12 +54,7 @@ const config: ExpoConfig = {
     typedRoutes: true,
     reactCompiler: true,
   },
-  extra: {
-    eas: {
-      // Project trên EAS (expo.dev). Không phải bí mật; push notification cần id này.
-      projectId: '775cb191-5db1-427c-99f8-d5eb2d90e50a',
-    },
-  },
+  // projectId của EAS sẽ do `npx eas-cli init` ghi vào đây (xem docs/setup.md).
 };
 
 export default config;
