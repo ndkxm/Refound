@@ -41,12 +41,13 @@ export function RecordTabButton() {
     >
       {({ pressed }) => (
         <>
-          {/* Nhô lên khỏi mép thanh tab. Tâm nút vẫn nằm trong thanh, vì Android không nhận chạm ngoài khung cha. */}
+          {/* Chỉ nhô 8px: Android và iOS không nhận chạm ở phần nằm ngoài khung của Pressable,
+              nhô cao hơn thì đỉnh nút thành vùng chết và chạm xuyên xuống màn phía sau. */}
           <View
-            className="absolute -top-5 h-14 w-14 items-center justify-center rounded-full border-4 border-paper bg-ink"
+            className="absolute -top-2 h-10 w-10 items-center justify-center rounded-full bg-ink"
             style={{ transform: [{ scale: pressed ? 0.94 : 1 }] }}
           >
-            <Icon name={{ android: 'add', ios: 'plus' }} color={colors.paper} size={28} />
+            <Icon name={{ android: 'add', ios: 'plus' }} color={colors.paper} size={24} />
           </View>
           <Text className="font-semibold text-ink" style={TAB_LABEL}>
             Ghi

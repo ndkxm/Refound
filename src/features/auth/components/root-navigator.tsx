@@ -6,6 +6,10 @@ import { useSessionStore } from '@/stores/session-store';
 /**
  * Stack gốc: mỗi nhóm màn chỉ mở được khi guard của nó đúng.
  * Guard đổi thì Expo Router tự chuyển màn và xóa lịch sử của nhóm vừa bị khóa.
+ *
+ * LƯU Ý khi thêm màn: file nằm thẳng trong src/app/ mà không khai báo ở đây thì ai cũng mở được,
+ * kể cả khi chưa đăng nhập. Màn của app đặt trong (tabs)/ hoặc capture/, hoặc thêm Stack.Screen
+ * vào đúng khối Protected bên dưới.
  */
 export default function RootNavigator() {
   const status = useSessionStore((s) => s.status);

@@ -5,7 +5,7 @@
 Tiêu chí của V06: **mở app là vào đúng màn theo trạng thái đã đăng nhập chưa, đã onboarding chưa.**
 Đây là khung mà cả 6 người gắn màn của mình vào, nên cấu trúc route phải ổn định từ ngày 3.
 
-- **Làm:** cây route (auth) / (onboarding) / (tabs) 5 tab / modal Ghi; chặn màn theo trạng thái; thanh tab hoàn chỉnh; màn tạm cho từng tab; store phiên mà V08, V09 nối vào.
+- **Làm:** cây route đăng nhập / onboarding / (tabs) 5 tab / modal Ghi; chặn màn theo trạng thái; thanh tab hoàn chỉnh; màn tạm cho từng tab; store phiên mà V08, V09 nối vào.
 - **Không làm:** form đăng nhập (V08), các bước onboarding (V09), nội dung từng tab, design system đầy đủ (V07).
 - **Không được:** màn tạm trông như app hỏng; mẫu UI kiểu AI (gradient tím, kính mờ, emoji làm icon, card đổ bóng khắp nơi).
 
@@ -22,11 +22,9 @@ Tiêu chí của V06: **mở app là vào đúng màn theo trạng thái đã đ
 ```
 src/app/
 ├── _layout.tsx            # Stack gốc: Protected theo trạng thái, giữ splash khi đang tải phiên
-├── (auth)/
-│   ├── _layout.tsx
-│   ├── sign-in.tsx        # màn tạm; V08 thay form thật
-│   └── sign-up.tsx
-├── (onboarding)/
+├── sign-in.tsx            # màn tạm; V08 thay form thật (để ở gốc, không bọc nhóm (auth))
+├── sign-up.tsx
+├── onboarding/            # thư mục thường, không phải nhóm: URL /onboarding, /onboarding/<bước>
 │   ├── _layout.tsx
 │   └── index.tsx          # màn tạm; V09 thay 4 bước thật
 ├── (tabs)/
@@ -46,14 +44,21 @@ Quy tắc chặn (một hàm thuần `getRouteAccess` trong `src/features/auth/u
 | Trạng thái                    | Được vào                  |
 | ----------------------------- | ------------------------- |
 | đang tải phiên                | không màn nào, giữ splash |
-| chưa đăng nhập                | (auth)                    |
-| đã đăng nhập, chưa onboarding | (onboarding)              |
+| chưa đăng nhập                | sign-in, sign-up          |
+| đã đăng nhập, chưa onboarding | onboarding/               |
 | đã đăng nhập, đã onboarding   | (tabs), capture           |
+
+Vì sao không dùng nhóm (auth) và (onboarding) như mục 10 của kế hoạch (đã thử, có test tái hiện):
+
+- Khi guard đổi, Expo Router chuyển tới màn đầu tiên được phép. Nhóm (auth) không có `index` nên rơi vào trang +not-found.
+- `(onboarding)/index` và `(tabs)/index` cùng trỏ vào URL `/`.
+
+**Thêm màn mới:** file nằm thẳng trong `src/app/` mà không khai báo trong `RootNavigator` thì ai cũng mở được, kể cả khi chưa đăng nhập. Màn của app đặt trong `(tabs)/` hoặc `capture/`, hoặc thêm `Stack.Screen` vào đúng khối Protected.
 
 ## Trạng thái
 
 `src/stores/session-store.ts` (Zustand): `status: 'loading' | 'signed-out' | 'signed-in'` và `hasOnboarded: boolean`, cùng các hàm `signIn`, `signOut`, `completeOnboarding`.
-Hiện chưa có Supabase nên mở app là `signed-out`. Màn tạm của (auth) và (onboarding) có nút **chỉ hiện khi dev** (`__DEV__`) để đi hết luồng trên máy.
+Hiện chưa có Supabase nên mở app là `signed-out`. Màn tạm đăng nhập và onboarding có nút **chỉ hiện khi dev** (`__DEV__`) để đi hết luồng trên máy.
 V08 chỉ cần gọi `signIn`/`signOut` từ sự kiện của Supabase Auth; V09 gọi `completeOnboarding` sau khi lưu `profiles`.
 
 ## Giao diện

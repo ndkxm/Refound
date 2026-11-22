@@ -82,7 +82,7 @@ export default function CaptureScreen() {
           </View>
           <Text className="mt-6 text-2xl font-bold text-paper">Nói</Text>
           <Text className="mt-1 text-base italic text-paper/70">“trà sữa 35k”</Text>
-          <Text className="mt-4 text-xs font-semibold uppercase tracking-widest text-paper/50">
+          <Text className="mt-4 text-xs font-semibold uppercase tracking-widest text-paper/70">
             V38 · TV3
           </Text>
         </View>
