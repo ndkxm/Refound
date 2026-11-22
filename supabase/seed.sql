@@ -1,0 +1,2 @@
+-- Dữ liệu mẫu chạy sau migration khi `npx supabase db reset`.
+-- Danh mục mặc định thuộc việc V11, dữ liệu demo thuộc việc V64.
