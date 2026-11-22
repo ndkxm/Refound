@@ -5,6 +5,9 @@ const tokens = ['paper', 'surface', 'ink', 'muted', 'line', 'accent', 'warning',
 module.exports = {
   content: ['./src/**/*.{js,jsx,ts,tsx}'],
   presets: [require('nativewind/preset')],
+  // Sáng/tối đi qua CSS variable (src/theme/colors.ts), không dùng class dark:. Để 'media' thì bản web
+  // báo lỗi "Cannot manually set color scheme" mỗi khi class của thẻ <html> đổi.
+  darkMode: 'class',
   theme: {
     // Font, cỡ chữ, khoảng cách của design system (việc V07) khai báo tiếp ở đây.
     extend: {
