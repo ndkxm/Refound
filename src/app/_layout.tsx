@@ -1,13 +1,25 @@
 import '../global.css';
 
-import { Stack } from 'expo-router';
+import { SplashScreen } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { useEffect } from 'react';
 
-// Khung điều hướng (auth / onboarding / tabs) là việc V06.
+import RootNavigator from '@/features/auth/components/root-navigator';
+import { useSessionStore } from '@/stores/session-store';
+
+// Giữ splash đến khi biết phiên đăng nhập, để không nháy qua màn sai.
+SplashScreen.preventAutoHideAsync();
+
 export default function RootLayout() {
+  const isLoading = useSessionStore((s) => s.status === 'loading');
+
+  useEffect(() => {
+    if (!isLoading) SplashScreen.hide();
+  }, [isLoading]);
+
   return (
     <>
-      <Stack screenOptions={{ headerShown: false }} />
+      <RootNavigator />
       <StatusBar style="auto" />
     </>
   );
