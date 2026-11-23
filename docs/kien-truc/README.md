@@ -23,7 +23,7 @@ Tài liệu kiến trúc theo mục 15 của `docs/yeu-cau-nghiep-vu.md`. Phiên
 
 ## Tóm tắt một trang
 
-**Hình dạng hệ thống.** App Expo nói chuyện với **một** server Spring Boot trên Render free qua REST và một kênh WebSocket. Server giữ toàn bộ logic, khóa bí mật, lời gọi AI; nối Supabase Postgres (pgvector, PostGIS) qua session pooler và Storage bằng service key. Ảnh đọc bằng signed URL 1 giờ. Push qua Expo Push. Đăng nhập bằng Google hoặc số điện thoại + OTP qua Firebase Auth; server kiểm tra Firebase ID token rồi phát hành JWT riêng, không lưu email, SĐT hay mật khẩu.
+**Hình dạng hệ thống.** App Expo nói chuyện với **một** server Spring Boot trên Render free qua REST và một kênh WebSocket. Server giữ toàn bộ logic, khóa bí mật, lời gọi AI; nối Supabase Postgres (pgvector, PostGIS) qua session pooler và Storage bằng service key. Ảnh đọc bằng signed URL 1 giờ. Push qua Expo Push. Đăng nhập bằng Google qua Firebase Auth; server kiểm tra Firebase ID token rồi phát hành JWT riêng, không lưu email hay mật khẩu.
 
 **Ba phần khó, nằm trong code của nhóm, đều là hàm thuần có JUnit:**
 
@@ -31,16 +31,15 @@ Tài liệu kiến trúc theo mục 15 của `docs/yeu-cau-nghiep-vu.md`. Phiên
 2. **Máy trạng thái** (`ItemStateMachine`, `ClaimStateMachine`): 14 chuyển trạng thái tin, 12 chuyển trạng thái claim; service ghi trong một transaction với `UPDATE ... WHERE status = :old`; bất biến quan trọng khóa thêm bằng partial unique index.
 3. **Phân quyền** (`*Access`): Spring Security chỉ xác thực JWT + vai trò admin; quyền sở hữu kiểm tra ở service; DTO tách theo người xem; 23 test truy cập chéo.
 
-**Đã chốt (22/11/2026).** Đăng nhập Google hoặc SĐT (ADR-05); ảnh qua signed URL (ADR-06); không chia việc cố định, nhận việc theo `docs/tien-do.md` (ADR-12).
+**Đã chốt (22/11/2026).** Đăng nhập Google (ADR-05; bỏ SĐT ngày 22/11/2026); ảnh qua signed URL (ADR-06); không chia việc cố định, nhận việc theo `docs/tien-do.md` (ADR-12).
 
-**Đề xuất đáng chú ý.** Đối chiếu nền chạy trong tiến trình, hàng đợi là cột của `items` (không thêm dịch vụ). Vector **768 chiều** chốt ngay, hợp với cả Jina lẫn Gemini. Không tạo chỉ mục vector ở quy mô vài trăm tin. WebSocket chỉ là tín hiệu, mọi ghi qua REST. Bảng ở schema `refound`, không lộ qua Data API của Supabase.
+**Đề xuất đáng chú ý.** Đối chiếu nền chạy trong tiến trình, hàng đợi là cột của `items` (không thêm dịch vụ). Embedding bằng Gemini `gemini-embedding-2`, **768 chiều**, ảnh và chữ chung không gian vector; Groq `qwen/qwen3.8-27b` mô tả ảnh thành chữ để embed thêm (lỗi thì bỏ qua). Không tạo chỉ mục vector ở quy mô vài trăm tin. WebSocket chỉ là tín hiệu, mọi ghi qua REST. Bảng ở schema `refound`, không lộ qua Data API của Supabase.
 
 **Giả định rủi ro nhất.**
 
 1. Spring chạy ổn trong 512 MB / 0,1 CPU và thức dưới 90 giây (U5). Không có phương án Java miễn phí khác; đo ngày 1–2.
 2. MapLibre RN và Firebase Auth native chạy với Expo SDK 58 / RN 0.88 (U13, U17).
-3. Gửi SMS OTP tới số Việt Nam không tốn tiền ở gói miễn phí của Firebase (U16). Nếu tốn: chỉ dùng Google cho người thật, SĐT chỉ chạy với số thử khi demo.
-4. Một ảnh tốn ~4.000 token Jina và số dư 10 triệu không hết hạn (U2).
-5. `jina-clip-v2` đủ tốt với mô tả tiếng Việt (U10); đo bằng bộ mẫu.
+3. Hạn mức request free của Gemini và Groq đủ cho demo (U2, U8); model Groq đang preview.
+4. `gemini-embedding-2` đủ tốt với mô tả tiếng Việt (U10); đo bằng bộ mẫu.
 
 **Còn chờ nhóm quyết** (bảng Quyết định trong `docs/tien-do.md`): duyệt các ADR còn "Đề xuất" (D8). Đã chốt thêm: cắt NFC và geofence (D4); BRD, đề cương, `AGENTS.md`, `docs/setup.md` đã sửa theo các quyết định (việc S02).

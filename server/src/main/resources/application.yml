@@ -1,0 +1,27 @@
+# Cấu hình chịu được 512 MB của Render free, xem docs/kien-truc/07-chiu-loi-chi-phi.md 7.5.
+# Bí mật chỉ đọc từ biến môi trường (docs/setup.md), không ghi vào file này.
+server:
+  port: ${PORT:8080}
+  tomcat:
+    threads:
+      max: 20
+
+spring:
+  application:
+    name: refound-server
+  config:
+    # Máy local: đọc server/.env (định dạng properties); không có file thì bỏ qua (Render, Docker, CI).
+    import: optional:file:.env[.properties]
+  main:
+    banner-mode: off
+  datasource:
+    # Máy local: Postgres trong Docker hoặc chuỗi session pooler của Supabase (thêm currentSchema=refound,extensions).
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/postgres?currentSchema=refound,extensions}
+    username: ${DATABASE_USERNAME:postgres}
+    password: ${DATABASE_PASSWORD:postgres}
+    hikari:
+      maximum-pool-size: 3
+  flyway:
+    schemas: refound
+    default-schema: refound
+    out-of-order: true # ADR-13

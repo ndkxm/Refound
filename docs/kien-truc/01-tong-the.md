@@ -23,11 +23,11 @@ flowchart LR
     ST[("Storage<br/>bucket private item-images")]
   end
 
-  Jina["Jina API<br/>jina-clip-v2 (768 chiều)"]
-  Groq["Groq API<br/>mô tả ảnh (tùy chọn)"]
+  Gemini["Gemini API<br/>gemini-embedding-2 (768 chiều)"]
+  Groq["Groq API<br/>qwen/qwen3.8-27b (mô tả ảnh)"]
   Expo["Expo Push API → FCM"]
   OSM["Tile OpenStreetMap"]
-  FB["Firebase Auth<br/>Google hoặc SMS OTP"]
+  FB["Firebase Auth<br/>Google"]
   GK["Khóa công khai của Google<br/>(JWKS, để kiểm tra ID token)"]
   GHA["GitHub Actions<br/>cron 1 lần/ngày"]
 
@@ -40,16 +40,16 @@ flowchart LR
   API --> PG
   API -- "upload, ký URL (service key)" --> ST
   Jobs --> PG
-  Jobs --> Jina
-  Jobs -. "chỉ khi chọn phương án B" .-> Groq
-  API -- "embed câu truy vấn" --> Jina
+  Jobs --> Gemini
+  Jobs -. "mô tả ảnh, lỗi thì bỏ qua" .-> Groq
+  API -- "embed câu truy vấn" --> Gemini
   Push --> Expo --> Phone
   GHA -- "GET /api/v1/health?db=true" --> API
 ```
 
 Ghi chú:
 
-- Đăng nhập: app đăng nhập Firebase bằng Google hoặc OTP, gửi ID token cho server một lần; server kiểm tra chữ ký bằng khóa công khai của Google rồi phát hành JWT riêng. Sau đó app chỉ dùng JWT của server (ADR-05).
+- Đăng nhập: app đăng nhập Firebase bằng Google, gửi ID token cho server một lần; server kiểm tra chữ ký bằng khóa công khai của Google rồi phát hành JWT riêng. Sau đó app chỉ dùng JWT của server (ADR-05).
 - App **không** giữ khóa Supabase. Ảnh tải bằng signed URL do server cấp; URL không chứa khóa và hết hạn sau 1 giờ (ADR-06).
 - WebSocket chỉ báo "có gì đó thay đổi"; dữ liệu thật luôn lấy lại qua REST. Mất WS thì app vẫn đúng, chỉ chậm hơn (ADR-07).
 - Job nền chạy trong chính tiến trình Spring, trạng thái job lưu trong cột của bảng `items`, nên server ngủ hay khởi động lại không mất việc (ADR-01).
@@ -61,7 +61,7 @@ Ghi chú:
 | `presentation`   | Controller REST, DTO theo người xem, STOMP config                          | `ItemController`, `ItemPublicDto`                 |
 | `application`    | Service, transaction, gọi policy và state machine, phát sự kiện            | `ClaimService.accept()`                           |
 | `domain`         | Hàm thuần, không Spring, không DB: chấm điểm, máy trạng thái, policy quyền | `MatchScorer`, `ClaimStateMachine`, `ClaimAccess` |
-| `infrastructure` | JDBC/JPA repository, client Jina/Groq/Storage/Expo Push                    | `JinaEmbeddingClient`                             |
+| `infrastructure` | JDBC/JPA repository, client Gemini/Groq/Storage/Expo Push                  | `GeminiEmbeddingClient`                           |
 
 Phần khó (đối chiếu, máy trạng thái, phân quyền) nằm ở `domain` dưới dạng hàm thuần, test bằng JUnit không cần DB. Đây là phần mỗi thành viên phải giải thích được khi bảo vệ.
 
@@ -88,7 +88,7 @@ sequenceDiagram
   S-)S: Sau commit: đánh thức job embedding
 ```
 
-Đăng tin không chờ AI (NFR-05): nếu Jina lỗi, tin vẫn được lưu, job thử lại sau.
+Đăng tin không chờ AI (NFR-05): nếu Gemini lỗi, tin vẫn được lưu, job thử lại sau; Groq lỗi thì job embed tiếp không có mô tả ảnh.
 
 ## Luồng 2: đối chiếu nền
 
@@ -97,11 +97,15 @@ sequenceDiagram
   autonumber
   participant J as Job (mỗi 30s hoặc được đánh thức)
   participant DB as Postgres
-  participant Jina
+  participant Q as Groq
+  participant G as Gemini
   participant N as Notification
   J->>DB: SELECT items WHERE embedding_status='pending'<br/>AND next_embed_at<=now() FOR UPDATE SKIP LOCKED LIMIT 5
   loop mỗi tin
-    J->>Jina: embed chữ + ảnh nhỏ 512px (bỏ ảnh nếu danh mục nhạy cảm, BR-08)
+    opt có ảnh, không nhạy cảm (BR-08)
+      J->>Q: mô tả ảnh nhỏ 512px → ai_caption (lỗi thì bỏ qua)
+    end
+    J->>G: embed chữ (kèm ai_caption) + ảnh nhỏ 512px (bỏ ảnh nếu danh mục nhạy cảm, BR-08)
     alt lỗi / 429
       J->>DB: attempts+1, next_embed_at = now + 2^attempts phút
     else thành công
@@ -113,7 +117,7 @@ sequenceDiagram
     end
   end
   N->>DB: insert notifications
-  N-)N: Sau commit: WS nếu online, không thì Expo Push
+  N-)N: Sau commit: WS (nếu online) + Expo Push
 ```
 
 ## Luồng 3: xác minh và bàn giao

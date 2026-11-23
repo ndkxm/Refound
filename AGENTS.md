@@ -12,20 +12,20 @@ Quy ước chung cho cả nhóm và cho mọi công cụ AI (Claude Code, Cursor
 
 ## Stack
 
-| Lớp            | Dùng                                                                                              |
-| -------------- | ------------------------------------------------------------------------------------------------- |
-| App            | Expo SDK 58, React Native 0.88, React 19, TypeScript 6 (strict)                                   |
-| Điều hướng     | Expo Router, route nằm trong `src/app/`                                                           |
-| Giao diện      | NativeWind 4 (Tailwind 3) qua `className`                                                         |
-| Dữ liệu server | TanStack Query                                                                                    |
-| State cục bộ   | Zustand                                                                                           |
-| Form           | react-hook-form + zod                                                                             |
-| Backend        | Spring Boot 3, Java 21, Maven, trong `server/` (REST + WebSocket)                                 |
-| CSDL, ảnh      | Supabase: Postgres (pgvector, PostGIS) + Storage; migration bằng Flyway                           |
-| AI             | Groq (LLM / vision) + Jina (embedding), chỉ gọi từ server Spring                                  |
-| Đăng nhập      | Firebase Auth (Google hoặc số điện thoại + OTP); server kiểm tra ID token rồi phát hành JWT riêng |
-| Triển khai     | Server chạy trên Render (đóng gói Docker); app phát hành bằng APK                                 |
-| Test           | Jest (`jest-expo`) cho app, JUnit 5 cho server                                                    |
+| Lớp            | Dùng                                                                                                                     |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| App            | Expo SDK 58, React Native 0.88, React 19, TypeScript 6 (strict)                                                          |
+| Điều hướng     | Expo Router, route nằm trong `src/app/`                                                                                  |
+| Giao diện      | NativeWind 4 (Tailwind 3) qua `className`                                                                                |
+| Dữ liệu server | TanStack Query                                                                                                           |
+| State cục bộ   | Zustand                                                                                                                  |
+| Form           | react-hook-form + zod                                                                                                    |
+| Backend        | Spring Boot 3, Java 21, Maven, trong `server/` (REST + WebSocket)                                                        |
+| CSDL, ảnh      | Supabase: Postgres (pgvector, PostGIS) + Storage; migration bằng Flyway                                                  |
+| AI             | Gemini API (`gemini-embedding-2`: embedding ảnh và chữ) + Groq (`qwen/qwen3.8-27b`: mô tả ảnh), chỉ gọi từ server Spring |
+| Đăng nhập      | Firebase Auth (chỉ Google); server kiểm tra Firebase ID token rồi phát hành JWT riêng                                    |
+| Triển khai     | Server chạy trên Render (đóng gói Docker); app phát hành bằng APK                                                        |
+| Test           | Jest (`jest-expo`) cho app, JUnit 5 cho server                                                                           |
 
 ### Expo thay đổi nhiều qua từng SDK, đừng tin trí nhớ
 
@@ -59,7 +59,7 @@ Nhóm **không chia thư mục cố định theo người**. Ai đang làm gì x
 | Thư mục                                   | Nội dung                                                                                      |
 | ----------------------------------------- | --------------------------------------------------------------------------------------------- |
 | `src/app/`                                | Màn hình (mỗi file là một route); chỉ ghép UI, không chứa logic nghiệp vụ                     |
-| `src/features/auth/`                      | Đăng nhập Google / số điện thoại, đặt tên hiển thị, hồ sơ                                     |
+| `src/features/auth/`                      | Đăng nhập Google, đặt tên hiển thị, hồ sơ                                                     |
 | `src/features/items/`                     | Đăng đồ mất / nhặt được, bản đồ, danh sách, chi tiết                                          |
 | `src/features/matching/`                  | Màn tìm kiếm, danh sách món có thể khớp, báo khớp chủ động (chỉ hiển thị; chấm điểm ở server) |
 | `src/features/claims/`                    | Xác minh chủ nhân, bàn giao bằng QR, chat ẩn danh                                             |
@@ -92,7 +92,7 @@ Mỗi feature chia nhỏ theo: `api/` (gọi REST của server), `hooks/` (TanSt
 
 - Hàm thuần phải có unit test.
   - Server (JUnit, trong `server/src/test/java/` cùng package): điểm khớp, máy trạng thái tin và bàn giao, kiểm tra quyền (`*Access`), làm tròn vị trí.
-  - App (Jest, đặt cạnh file: `format-distance.ts` → `format-distance.test.ts`): định dạng khoảng cách/thời gian, chuẩn hóa số điện thoại, schema form.
+  - App (Jest, đặt cạnh file: `format-distance.ts` → `format-distance.test.ts`): định dạng khoảng cách/thời gian, schema form.
 - Công thức và thuật toán: **tự tính tay ví dụ trước**, dùng làm đáp án trong test, rồi mới viết code.
 
 ## Server (Spring) và CSDL
@@ -103,8 +103,8 @@ Mỗi feature chia nhỏ theo: `api/` (gọi REST của server), `hooks/` (TanSt
 - Phân quyền nằm ở server (Spring Security + kiểm tra ở service), không còn RLS làm chốt chặn chính. Câu hỏi xác minh, đáp án, chat và thông tin liên lạc chỉ trả về cho đúng người liên quan.
 - Mỗi endpoint có kiểm soát quyền phải kèm test truy cập chéo (user A gọi API lấy dữ liệu của user B phải bị từ chối), do người viết tự viết, không giao cho AI tự kiểm.
 - Chuyển trạng thái tin và yêu cầu nhận đồ chỉ xảy ra ở server, trong một transaction.
-- Key Groq, key Jina, khóa Supabase và JWT secret chỉ đọc từ biến môi trường của server (Render Environment), không commit.
-- Server không lưu email, số điện thoại hay mật khẩu; người dùng định danh bằng `firebase_uid` lấy từ Firebase ID token đã kiểm tra chữ ký.
+- Key Gemini, key Groq, khóa Supabase và JWT secret chỉ đọc từ biến môi trường của server (Render Environment), không commit.
+- Server không lưu email hay mật khẩu; người dùng định danh bằng `firebase_uid` lấy từ Firebase ID token đã kiểm tra chữ ký.
 - Server chạy trên Render gói miễn phí: tự tắt sau khoảng 15 phút không có truy cập và khởi động lại chậm. Thiết kế app phải chịu được lần gọi đầu rất chậm (hiện trạng thái chờ, thử lại).
 
 ## Bảo mật

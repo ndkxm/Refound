@@ -21,20 +21,20 @@
 }
 ```
 
-| `code`                  | HTTP | Khi nào                                                                        |
-| ----------------------- | ---- | ------------------------------------------------------------------------------ |
-| `VALIDATION_FAILED`     | 400  | Kèm `errors: [{field, message}]`                                               |
-| `UNAUTHENTICATED`       | 401  | Thiếu/sai/hết hạn token, tài khoản bị khóa                                     |
-| `FORBIDDEN`             | 403  | Không có quyền trên tài nguyên công khai                                       |
-| `NOT_FOUND`             | 404  | Không tồn tại **hoặc** không được biết là tồn tại (3.3)                        |
-| `INVALID_STATE`         | 409  | Chuyển trạng thái không hợp lệ / có người đổi trước                            |
-| `DUPLICATE_SUSPECTED`   | 409  | Kèm `existingItemId`                                                           |
-| `CLAIM_ALREADY_OPEN`    | 409  | Đã có claim mở trên tin                                                        |
-| `HANDOVER_CODE_INVALID` | 409  | Mã sai, hết hạn hoặc đã dùng                                                   |
-| `PAYLOAD_TOO_LARGE`     | 413  | Ảnh > 1 MB hoặc request > 6 MB                                                 |
-| `RATE_LIMITED`          | 429  | BR-09, gửi tin nhắn quá nhanh; kèm `retryAfterSeconds`                         |
-| `ATTEMPT_LIMIT`         | 429  | BR-05                                                                          |
-| `AI_UNAVAILABLE`        | 503  | Chỉ khi tìm kiếm **bằng ảnh** mà Jina lỗi (tìm bằng chữ thì hạ cấp, không lỗi) |
+| `code`                  | HTTP | Khi nào                                                                          |
+| ----------------------- | ---- | -------------------------------------------------------------------------------- |
+| `VALIDATION_FAILED`     | 400  | Kèm `errors: [{field, message}]`                                                 |
+| `UNAUTHENTICATED`       | 401  | Thiếu/sai/hết hạn token, tài khoản bị khóa                                       |
+| `FORBIDDEN`             | 403  | Không có quyền trên tài nguyên công khai                                         |
+| `NOT_FOUND`             | 404  | Không tồn tại **hoặc** không được biết là tồn tại (3.3)                          |
+| `INVALID_STATE`         | 409  | Chuyển trạng thái không hợp lệ / có người đổi trước                              |
+| `DUPLICATE_SUSPECTED`   | 409  | Kèm `existingItemId`                                                             |
+| `CLAIM_ALREADY_OPEN`    | 409  | Đã có claim mở trên tin                                                          |
+| `HANDOVER_CODE_INVALID` | 409  | Mã sai, hết hạn hoặc đã dùng                                                     |
+| `PAYLOAD_TOO_LARGE`     | 413  | Ảnh > 1 MB hoặc request > 6 MB                                                   |
+| `RATE_LIMITED`          | 429  | BR-09, gửi tin nhắn quá nhanh; kèm `retryAfterSeconds`                           |
+| `ATTEMPT_LIMIT`         | 429  | BR-05                                                                            |
+| `AI_UNAVAILABLE`        | 503  | Chỉ khi tìm kiếm **bằng ảnh** mà Gemini lỗi (tìm bằng chữ thì hạ cấp, không lỗi) |
 
 ## 6.2 REST
 
@@ -42,18 +42,18 @@ Cột "Quyền" tham chiếu ma trận ở `03-phan-quyen.md`.
 
 ### Tài khoản (`auth`)
 
-| Phương thức  | Đường dẫn                | Vào                                                                             | Ra                                                                        | Quyền                                            | Mã yêu cầu         |
-| ------------ | ------------------------ | ------------------------------------------------------------------------------- | ------------------------------------------------------------------------- | ------------------------------------------------ | ------------------ |
-| POST         | `/auth/firebase`         | `{idToken, displayName?}` (Firebase ID token sau khi đăng nhập Google hoặc OTP) | `{token, user: MeDto, isNew}`. `isNew=true` → app mở màn đặt tên hiển thị | Khách; token sai/hết hạn → 401 `UNAUTHENTICATED` | FR-AUTH-01, ADR-05 |
-| GET          | `/health`                | `?db=true`                                                                      | `{status, db}`                                                            | Khách                                            | Q7                 |
-| GET          | `/me`                    |                                                                                 | `MeDto` (`authProvider`, `notificationPrefs`, `reputation`)               | Bản thân                                         | FR-AUTH-02         |
-| PATCH        | `/me`                    | `{displayName?}`                                                                | `MeDto`                                                                   | Bản thân                                         | FR-AUTH-02         |
-| PUT          | `/me/avatar`             | multipart `file`                                                                | `MeDto`                                                                   | Bản thân                                         | FR-AUTH-02         |
-| PUT          | `/me/notification-prefs` | `{match: bool, claim: bool, chat: bool, expiry: bool}`                          | `MeDto`                                                                   | Bản thân                                         | FR-NOTI-03         |
-| PUT / DELETE | `/me/push-token`         | `{token}`                                                                       | 204                                                                       | Bản thân                                         | FR-NOTI-01         |
-| DELETE       | `/me`                    | `{idToken}` (Firebase ID token mới lấy, xác nhận lại chính chủ)                 | 204; app xóa luôn tài khoản Firebase                                      | Bản thân                                         | FR-AUTH-04         |
-| GET          | `/users/{id}`            |                                                                                 | `{id, displayName, avatarUrl, reputation}`                                | Người đăng nhập                                  | FR-AUTH-02         |
-| GET          | `/me/reputation-events`  |                                                                                 | trang `ReputationEventDto`                                                | Bản thân                                         | FR-CLAIM-05        |
+| Phương thức  | Đường dẫn                | Vào                                                                    | Ra                                                                        | Quyền                                            | Mã yêu cầu         |
+| ------------ | ------------------------ | ---------------------------------------------------------------------- | ------------------------------------------------------------------------- | ------------------------------------------------ | ------------------ |
+| POST         | `/auth/firebase`         | `{idToken, displayName?}` (Firebase ID token sau khi đăng nhập Google) | `{token, user: MeDto, isNew}`. `isNew=true` → app mở màn đặt tên hiển thị | Khách; token sai/hết hạn → 401 `UNAUTHENTICATED` | FR-AUTH-01, ADR-05 |
+| GET          | `/health`                | `?db=true`                                                             | `{status, db}`                                                            | Khách                                            | Q7                 |
+| GET          | `/me`                    |                                                                        | `MeDto` (`authProvider`, `notificationPrefs`, `reputation`)               | Bản thân                                         | FR-AUTH-02         |
+| PATCH        | `/me`                    | `{displayName?}`                                                       | `MeDto`                                                                   | Bản thân                                         | FR-AUTH-02         |
+| PUT          | `/me/avatar`             | multipart `file`                                                       | `MeDto`                                                                   | Bản thân                                         | FR-AUTH-02         |
+| PUT          | `/me/notification-prefs` | `{match: bool, claim: bool, chat: bool, expiry: bool}`                 | `MeDto`                                                                   | Bản thân                                         | FR-NOTI-03         |
+| PUT / DELETE | `/me/push-token`         | `{token}`                                                              | 204                                                                       | Bản thân                                         | FR-NOTI-01         |
+| DELETE       | `/me`                    | `{idToken}` (Firebase ID token mới lấy, xác nhận lại chính chủ)        | 204; app xóa luôn tài khoản Firebase                                      | Bản thân                                         | FR-AUTH-04         |
+| GET          | `/users/{id}`            |                                                                        | `{id, displayName, avatarUrl, reputation}`                                | Người đăng nhập                                  | FR-AUTH-02         |
+| GET          | `/me/reputation-events`  |                                                                        | trang `ReputationEventDto`                                                | Bản thân                                         | FR-CLAIM-05        |
 
 ### Tin (`item`)
 
@@ -100,7 +100,7 @@ Cột "Quyền" tham chiếu ma trận ở `03-phan-quyen.md`.
 | GET         | `/claims/{id}/messages`        | `?after=<id>&limit`             | `[{id, mine, body, createdAt}]`                                                                                                     | Hai bên                                           | FR-CLAIM-03        |
 | POST        | `/claims/{id}/messages`        | `{body}` (1–1000 ký tự)         | 201 `MessageDto`                                                                                                                    | Hai bên, claim `accepted`                         | FR-CLAIM-03        |
 
-Tin nhắn trả `mine: true/false`, **không** trả `senderId`; server vốn không lưu email hay SĐT (BR-04).
+Tin nhắn trả `mine: true/false`, **không** trả `senderId`; server vốn không lưu email (BR-04).
 
 ### Thông báo (`notification`)
 
@@ -143,4 +143,4 @@ Sự kiện (chỉ là tín hiệu; app nhận xong thì `invalidateQueries`):
 { "type": "notification.created", "notificationId": 456 }
 ```
 
-Người nhận không có phiên WS (`SimpUserRegistry`) → gửi Expo Push (nếu loại thông báo đó đang bật).
+Ngoài sự kiện WS, server luôn gửi Expo Push nếu loại thông báo đó đang bật; app đang mở thì tự ẩn banner (ADR-08).

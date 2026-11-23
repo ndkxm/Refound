@@ -4,14 +4,15 @@
 
 ## 4.1 Tạo embedding
 
-| Bước                  | Chi tiết                                                                                                                                                                                                   |
-| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Khi nào               | Tin mới hoặc sửa mô tả/ảnh/danh mục → `embedding_status='pending'`. Job xử lý (mục 4.4)                                                                                                                    |
-| Chữ                   | `"{tên danh mục}. {mô tả}"` → 1 vector `source='text'`                                                                                                                                                     |
-| Ảnh                   | Mỗi ảnh nhỏ 512px (đã resize ở app) → 1 vector `source='image'`. **Bỏ qua** nếu danh mục `sensitive` (BR-08): tin nhạy cảm chỉ đối chiếu bằng chữ, vị trí, thời gian, danh mục                             |
-| Model                 | Mặc định `jina-clip-v2`, tham số `dimensions=768` (ảnh và chữ chung không gian vector). Dự phòng xem 4.6                                                                                                   |
-| Câu truy vấn tìm kiếm | Embed đồng bộ khi gọi `/search`; kết quả lưu `embedding_cache` theo sha256(model‖input)                                                                                                                    |
-| Lỗi                   | Thử lại lùi dần 1, 2, 4, 8, 16, 32 phút; sau 6 lần → `failed` (vẫn hiện trong danh sách, đối chiếu chỉ bằng vị trí/thời gian/danh mục). Jina trả 429/402 → tạm dừng mọi lời gọi 5 phút (biến trong bộ nhớ) |
+| Bước                  | Chi tiết                                                                                                                                                                                                                                                                                                |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Khi nào               | Tin mới hoặc sửa mô tả/ảnh/danh mục → `embedding_status='pending'`. Job xử lý (mục 4.4)                                                                                                                                                                                                                 |
+| Chữ                   | `"title: {tên danh mục} \| text: {mô tả}. {ai_caption}"` (tiền tố tài liệu của `gemini-embedding-2`; bỏ phần `ai_caption` nếu chưa có) → 1 vector `source='text'`                                                                                                                                       |
+| Mô tả ảnh             | Trước bước chữ: tối đa 3 ảnh nhỏ 512px → Groq `qwen/qwen3.8-27b` → `items.ai_caption` (một câu tiếng Việt ≤ 40 từ, không hiện cho người dùng). Bỏ qua nếu danh mục `sensitive` hoặc Groq lỗi/429 (ADR-02)                                                                                               |
+| Ảnh                   | Mỗi ảnh nhỏ 512px (đã resize ở app) → 1 vector `source='image'`. **Bỏ qua** nếu danh mục `sensitive` (BR-08): tin nhạy cảm chỉ đối chiếu bằng chữ, vị trí, thời gian, danh mục                                                                                                                          |
+| Model                 | `gemini-embedding-2`, `output_dimensionality=768` (ảnh và chữ chung không gian vector; vector cắt về 768 được model tự chuẩn hóa). Model này không nhận `task_type`: loại tác vụ ghi trong tiền tố chữ. Ảnh gửi dạng JPEG, tối đa 6 ảnh/request                                                         |
+| Câu truy vấn tìm kiếm | `"task: search result \| query: {chữ người dùng gõ}"`, embed đồng bộ khi gọi `/search`; kết quả lưu `embedding_cache` theo sha256(model‖input)                                                                                                                                                          |
+| Lỗi                   | Thử lại lùi dần 1, 2, 4, 8, 16, 32 phút; sau 6 lần → `failed` (vẫn hiện trong danh sách, đối chiếu chỉ bằng vị trí/thời gian/danh mục). Gemini trả 429 (hết hạn mức theo phút hoặc ngày) → tạm dừng mọi lời gọi 5 phút (biến trong bộ nhớ). Lỗi của Groq không tính ở đây (bỏ mô tả ảnh, xem dòng trên) |
 
 ## 4.2 Công thức điểm khớp
 
@@ -100,7 +101,7 @@ order by cos desc nulls last
 limit 50;
 ```
 
-Jina lỗi khi tìm kiếm → bỏ `s_v`, xếp theo vị trí/thời gian/danh mục + lọc chữ `description ILIKE '%từ khóa%'`, trả cờ `degraded=true` để app hiện "Tìm kiếm ảnh tạm thời không khả dụng".
+Gemini lỗi khi tìm kiếm → bỏ `s_v`, xếp theo vị trí/thời gian/danh mục + lọc chữ `description ILIKE '%từ khóa%'`, trả cờ `degraded=true` để app hiện "Tìm kiếm ảnh tạm thời không khả dụng".
 
 ## 4.4 Đối chiếu nền (FR-MATCH-03)
 
@@ -135,16 +136,12 @@ Trùng → `409 DUPLICATE_SUSPECTED` kèm id tin cũ; app hỏi "Bạn đã đă
 
 **Lệnh:** `./mvnw test -Dgroups=eval` → in top-1, top-5, MRR. Vector đã tính lưu ở `eval/cache-<model>.json`; xóa file để tính lại. Chạy lại khi đổi trọng số không tốn token.
 
-**Thử nghiệm Q3** (việc S08 trong `docs/tien-do.md`, ngày 1–3 tuần 1, trước khi chốt code đối chiếu):
+**Đo model** (việc P0-13; S08 thử nghiệm trước đã bỏ ngày 23/11/2026). Model đã chốt (ADR-02), nên bộ mẫu không dùng để chọn model mà để:
 
-|     | Phương án A (mặc định)                                                    | Phương án B (dự phòng)                              |
-| --- | ------------------------------------------------------------------------- | --------------------------------------------------- |
-| Ảnh | `jina-clip-v2`, `dimensions=768`                                          | Groq vision mô tả ảnh thành chữ tiếng Việt          |
-| Chữ | `jina-clip-v2`, `dimensions=768`                                          | `gemini-embedding-001`, `output_dimensionality=768` |
-| Đo  | top-5, MRR, token mỗi ảnh (đọc `usage.total_tokens` của Jina), độ trễ p50 | top-5, MRR, độ trễ p50 (2 lời gọi), số request Groq |
+- đo top-1, top-5, MRR chỉ bằng cosine (chưa có vị trí, thời gian, danh mục), tách riêng ba nhóm truy vấn: chữ↔ảnh, ảnh↔ảnh, chữ↔chữ;
+- đo độ trễ p50 một lời gọi và số request cho cả bộ (so với hạn mức free, U2);
+- lấy phân bố cosine của cặp đúng và cặp sai để chọn `c0`, `c1`.
 
-Số chiều **768 chốt ngay** vì cả hai model đều hỗ trợ cắt về 768 _(giả định U3, kiểm tra trong 5 phút)_, nên migration không phải chờ Q3.
+Số chiều **768** cố định (U3). Hiệu chỉnh `c0, c1` từ phân bố cosine thu được. Chỉnh trọng số bằng lưới bước 0,05, chỉ đổi khi top-5 tăng ≥ 5 điểm (bộ mẫu nhỏ, tránh khớp quá mức). Mục tiêu G1: top-5 ≥ 70%. Nếu chỉ bằng cosine mà top-5 còn thấp xa mục tiêu, thử gộp chữ và ảnh của một tin thành một vector (nhiều phần trong một `content` cho ra một vector tổng hợp) trước khi tính tới đổi model.
 
-Luật chọn: giữ A, trừ khi B hơn A ≥ 10 điểm top-5. Hiệu chỉnh `c0, c1` từ phân bố cosine thu được. Chỉnh trọng số bằng lưới bước 0,05, chỉ đổi khi top-5 tăng ≥ 5 điểm (bộ mẫu nhỏ, tránh khớp quá mức). Mục tiêu G1: top-5 ≥ 70%.
-
-Chi phí thử nghiệm: 60 ảnh × giả định ~4.000 token/ảnh ≈ 0,24 triệu token Jina, nhỏ so với 10 triệu.
+Chi phí: embedding miễn phí ở gói free; khoảng 60 ảnh + 60 đoạn chữ ≈ 120 lời gọi (hoặc ít hơn nếu gộp nhiều ảnh mỗi request), chạy lại dùng cache.

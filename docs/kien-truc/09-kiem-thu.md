@@ -25,7 +25,7 @@ Không viết test giao diện tự động (E2E): 3 tuần không đủ để g
 
 ## 9.3 Kịch bản demo (5–7 phút, máy A = Finder, máy B = Owner)
 
-Chuẩn bị: nạp dữ liệu mẫu (`./mvnw spring-boot:run -Dspring-boot.run.arguments=--seed`, nạp 60 tin kèm vector có sẵn), đánh thức server 10 phút trước, đăng nhập sẵn hai máy (một máy bằng Google, một máy bằng số điện thoại thử của Firebase để không phụ thuộc SMS).
+Chuẩn bị: nạp dữ liệu mẫu (`./mvnw spring-boot:run -Dspring-boot.run.arguments=--seed`, nạp 60 tin kèm vector có sẵn), đánh thức server 10 phút trước, đăng nhập sẵn hai máy bằng hai tài khoản Google khác nhau.
 
 | #   | Máy                       | Thao tác                                                             | Điểm cần nói                             |
 | --- | ------------------------- | -------------------------------------------------------------------- | ---------------------------------------- |
@@ -40,4 +40,4 @@ Chuẩn bị: nạp dữ liệu mẫu (`./mvnw spring-boot:run -Dspring-boot.run
 | 9   | A → B                     | A hiện QR, B quét → "Đã trả"                                         | Mã 1 lần, 10 phút; uy tín A +10          |
 | 10  | C (máy B, tài khoản khác) | Thử mở lại claim cũ                                                  | 404, test X11                            |
 
-Dự phòng: server chậm → banner chờ (7.5); Render hỏng → server trên laptop + màn đổi URL; Jina hỏng → bước 2 hạ cấp sang lọc chữ; bước 5 thay bằng FR-MATCH-06: A mở tin mất của B, bấm "Tôi nhặt được món này" (không cần AI), B vẫn nhận thông báo và đi tiếp từ bước 6 (NFR-07).
+Dự phòng: server chậm → banner chờ (7.5); Render hỏng → server trên laptop + màn đổi URL; Gemini hỏng → bước 2 hạ cấp sang lọc chữ; bước 5 thay bằng FR-MATCH-06: A mở tin mất của B, bấm "Tôi nhặt được món này" (không cần AI), B vẫn nhận thông báo và đi tiếp từ bước 6 (NFR-07).
