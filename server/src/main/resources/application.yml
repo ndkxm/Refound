@@ -25,3 +25,22 @@ spring:
     schemas: refound
     default-schema: refound
     out-of-order: true # ADR-13
+  servlet:
+    multipart:
+      max-file-size: 1MB # ADR-06: mỗi ảnh JPEG ≤ 1 MB
+      max-request-size: 6MB
+  jackson:
+    time-zone: Asia/Ho_Chi_Minh
+
+refound:
+  jwt:
+    secret: ${JWT_SECRET:}
+    expiration: ${JWT_EXPIRATION_MS:604800000} # ms, 7 ngày (ADR-05)
+  firebase:
+    project-id: ${FIREBASE_PROJECT_ID:}
+    # U18: JWKS của securetoken, cùng khóa với URL X.509 trong tài liệu Firebase (S05)
+    jwks-uri: https://www.googleapis.com/service_accounts/v1/jwk/securetoken@system.gserviceaccount.com
+  storage:
+    url: ${SUPABASE_URL:}
+    key: ${SUPABASE_SERVICE_ROLE_KEY:}
+    bucket: ${SUPABASE_STORAGE_BUCKET:item-images}
