@@ -133,8 +133,10 @@ create table items (
   updated_at         timestamptz not null default now(),
   deleted_at         timestamptz,
   constraint items_radius_ck check (
-    (type = 'lost'  and radius_m between 50 and 2000) or
-    (type = 'found' and radius_m is null))
+    (type = 'lost'  and radius_m is not null and radius_m between 50 and 2000) or
+    (type = 'found' and radius_m is null)),
+  constraint items_claimed_found_ck check (status <> 'claimed' or type = 'found'),          -- 5.1 I3
+  constraint items_closed_reason_ck check (status <> 'closed' or closed_reason is not null)  -- 5.1 I7, I12
 );
 create index items_location_gix  on items using gist (location);
 create index items_listing_ix    on items (type, status, happened_at desc) where deleted_at is null;
@@ -159,7 +161,9 @@ create table item_embeddings (
   model      text not null,
   embedding  vector(768) not null,
   created_at timestamptz not null default now(),
-  check ((source = 'image') = (image_id is not null))
+  check ((source = 'image') = (image_id is not null)),
+  -- job chạy lại không tạo vector trùng; nulls not distinct để chữ (image_id null) cũng chỉ có một
+  unique nulls not distinct (item_id, source, image_id)
 );
 create index item_embeddings_item_ix on item_embeddings (item_id);
 -- Không tạo HNSW: vài trăm tin thì quét tuần tự cho kết quả chính xác và vẫn < 50 ms (ADR-03).
