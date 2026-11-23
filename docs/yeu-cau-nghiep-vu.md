@@ -102,12 +102,14 @@ Một người dùng có thể vừa là Owner vừa là Finder, ở các tin kh
 
 ### 7.1 Tài khoản (AUTH)
 
-| Mã         | Ưu  | Yêu cầu                                                                                                  | AC                                                                                                                                                    |
-| ---------- | --- | -------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| FR-AUTH-01 | P0  | Đăng nhập bằng **tài khoản Google** (qua Firebase Auth). Lần đầu đăng nhập là đăng ký. Không có mật khẩu | Đăng nhập xong vào được app; lần đầu nhập tên hiển thị; hủy chọn tài khoản hoặc lỗi mạng báo lỗi tiếng Việt rõ ràng; server không lưu email, mật khẩu |
-| FR-AUTH-02 | P0  | Hồ sơ cơ bản: tên hiển thị, ảnh đại diện                                                                 | Tên hiển thị là thứ duy nhất người khác thấy                                                                                                          |
-| FR-AUTH-03 | P1  | Phân quyền: người dùng thường và quản trị                                                                | Quyền kiểm tra ở server, không chỉ ở giao diện                                                                                                        |
-| FR-AUTH-04 | P1  | Đăng xuất, xóa tài khoản và dữ liệu cá nhân                                                              | Sau khi xóa, tin của người đó được ẩn danh hoặc xóa, chat bị xóa                                                                                      |
+| Mã         | Ưu  | Yêu cầu                                                                                                    | AC                                                                                                                                                    |
+| ---------- | --- | ---------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| FR-AUTH-01 | P0  | Đăng nhập bằng **tài khoản Google** (qua Firebase Auth). Lần đầu đăng nhập là đăng ký. Không có mật khẩu   | Đăng nhập xong vào được app; lần đầu nhập tên hiển thị; hủy chọn tài khoản hoặc lỗi mạng báo lỗi tiếng Việt rõ ràng; server không lưu email, mật khẩu |
+| FR-AUTH-02 | P0  | Hồ sơ cơ bản: tên hiển thị, ảnh đại diện                                                                   | Tên hiển thị là thứ duy nhất người khác thấy                                                                                                          |
+| FR-AUTH-03 | P1  | Phân quyền: người dùng thường và quản trị                                                                  | Quyền kiểm tra ở server, không chỉ ở giao diện                                                                                                        |
+| FR-AUTH-04 | P1  | Đăng xuất, xóa tài khoản và dữ liệu cá nhân                                                                | Sau khi xóa, tin của người đó được ẩn danh hoặc xóa, chat bị xóa                                                                                      |
+| FR-AUTH-05 | P1  | Đồng ý điều khoản sử dụng trước khi dùng app; đổi điều khoản thì đồng ý lại (D14, yêu cầu của Google Play) | Chưa đồng ý thì không đăng tin, claim, chat được; vẫn xem được hồ sơ và xóa được tài khoản                                                            |
+| FR-AUTH-06 | P1  | Chặn một người dùng khác và bỏ chặn (D14, yêu cầu của Google Play)                                         | Hai bên không còn thấy tin, hồ sơ của nhau, không claim hay chat được với nhau; người bị chặn không được báo (BR-15)                                  |
 
 ### 7.2 Đăng và quản lý tin (ITEM)
 
@@ -178,6 +180,7 @@ Một người dùng có thể vừa là Owner vừa là Finder, ở các tin kh
 | BR-12 | Mọi thời điểm lưu `timestamptz`, hiển thị theo múi giờ `Asia/Ho_Chi_Minh`.                                                                                                                                                |
 | BR-13 | Tin "mất" **công khai** cho mọi người dùng đã đăng nhập, nên không được chứa thông tin liên lạc; vị trí hiển thị là khu vực kèm bán kính (không phải điểm chính xác); không có câu hỏi xác minh (chỉ tin "nhặt được" có). |
 | BR-14 | Một bàn giao luôn phải đi qua xác minh của người nhặt (BR-03), kể cả khi người nhặt là người chủ động báo khớp (FR-MATCH-06).                                                                                             |
+| BR-15 | Chặn có hiệu lực hai chiều: khi A chặn B, cả A và B đều không thấy tin, hồ sơ của người kia và không tạo được claim, báo khớp với tin của người kia; claim đang mở giữa hai người bị hủy. Quản trị không bị ảnh hưởng.    |
 
 ## 9. Vòng đời trạng thái
 

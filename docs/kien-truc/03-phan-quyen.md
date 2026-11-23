@@ -50,7 +50,7 @@ Tài khoản `locked` hoặc `deleted` bị từ chối ở filter (401) dù JWT
 ```mermaid
 flowchart TB
   R[Request] --> F1["1. SecurityFilterChain<br/>oauth2ResourceServer JWT (HS256)<br/>URL: /auth/**, /health permitAll;<br/>/admin/** hasRole ADMIN; còn lại authenticated"]
-  F1 --> F2["2. UserStatusFilter<br/>1 truy vấn theo PK: status = active?"]
+  F1 --> F2["2. UserStatusFilter<br/>1 truy vấn theo PK: status = active?<br/>đã đồng ý điều khoản? (3.5)"]
   F2 --> C["3. Controller<br/>chỉ lấy userId từ token, không bao giờ từ body"]
   C --> S["4. Service<br/>load bản ghi → XxxAccess.require...(record, me)<br/>→ StateMachine → ghi DB"]
   S --> D["5. DTO theo người xem<br/>ItemPublicDto / ItemOwnerDto / FinderSecretDto"]
@@ -96,3 +96,31 @@ Mỗi dòng là một test `@SpringBootTest` + MockMvc với hai user A, B có s
 | X20 | WS `CONNECT`                                                                | Không có / sai JWT                                                                              | Từ chối kết nối                                                      |
 | X21 | WS                                                                          | B nhận được sự kiện của claim A–C                                                               | Không (kiểm tra `convertAndSendToUser` chỉ gửi cho hai bên)          |
 | X22 | `GET /reputation-events?userId=`                                            | B xem lịch sử của A                                                                             | 403                                                                  |
+| X24 | `GET /items/{id}`, `GET /users/{id}`                                        | B xem tin / hồ sơ của A khi A chặn B, và A xem của B (hai chiều)                                | 404                                                                  |
+| X25 | `GET /items`, `POST /search`, `GET /items/{id}/matches`                     | Danh sách của B khi A chặn B                                                                    | Không có tin của A                                                   |
+| X26 | `POST /items/{id}/claims`, `POST /items/{lostId}/found-reports`             | B claim / báo khớp tin của A khi bị chặn                                                        | 404                                                                  |
+| X27 | `POST /users/{id}/block`                                                    | A chặn B khi có claim `accepted` giữa hai người                                                 | Claim `cancelled`, tin về `open`; B gửi chat → 409                   |
+| X28 | `GET /me/blocks`, `DELETE /users/{id}/block`                                | C xem / xóa danh sách chặn của A                                                                | Chỉ thấy và chỉ xóa được dòng của mình                               |
+| X29 | Mọi endpoint ngoài danh sách miễn ở 3.5                                     | Chưa đồng ý điều khoản phiên bản hiện hành                                                      | 403 `TERMS_NOT_ACCEPTED`; `DELETE /me` vẫn được                      |
+
+## 3.5 Chặn người dùng (R03) và đồng ý điều khoản (R04)
+
+Thêm theo D14 (phát hành lên Google Play: app có nội dung do người dùng tạo phải cho chặn người dùng và bắt đồng ý điều khoản). Migration `V202611231130__moderation_blocks_terms.sql`.
+
+**Chặn (FR-AUTH-06, BR-15)**, module `moderation`:
+
+- A chặn B ghi một dòng `user_blocks(blocker=A, blocked=B)`. Hiệu lực **hai chiều**: chặn một chiều thì B vẫn theo dõi được tin của A, trong khi đó thường là lý do A chặn.
+- Với cả A và B, tin của người kia không có trong danh sách, bản đồ, tìm kiếm, "món có thể khớp" và không sinh thông báo đối chiếu. Xem chi tiết tin, hồ sơ, câu hỏi kín của người kia → 404 (như tin không tồn tại, 3.3). Claim hay báo khớp (FR-MATCH-06) trên tin của người kia → 404.
+- Claim đang `submitted` / `accepted` giữa hai người (ai là Finder cũng vậy) → `cancelled` trong cùng transaction với việc chặn (C10 ở 5.2): tin `claimed` → `open` (I4), hủy mã QR, chat thành chỉ đọc. Claim `completed` giữ nguyên lịch sử.
+- B **không** được báo là bị chặn: thông báo hủy claim chỉ ghi "Yêu cầu đã bị hủy". `POST /users/{id}/block` luôn trả 204 kể cả khi đã chặn, hoặc người kia đã chặn mình, để không dò được trạng thái chặn.
+- Admin không bị ảnh hưởng (vẫn xem mọi tin, mọi claim). Chặn không thay báo cáo: màn chặn có lối tắt "Báo cáo", tạo `reports` theo tin hoặc claim như FR-ITEM-06.
+- Bỏ chặn xóa dòng; claim đã hủy không khôi phục. `GET /me/blocks` là chỗ duy nhất người chặn thấy tên người mình đã chặn.
+- Thực thi: thao tác trên một bản ghi gọi `BlockService.blockedEitherWay(me, other)` (một truy vấn hai chiều theo khóa chính); truy vấn danh sách thêm điều kiện dùng chung `not exists (select 1 from user_blocks b where (b.blocker_id = :me and b.blocked_id = i.author_id) or (b.blocker_id = i.author_id and b.blocked_id = :me))`. Module khác gọi qua `BlockService` (quy tắc 8.2).
+
+**Điều khoản (FR-AUTH-05)**:
+
+- Server giữ phiên bản điều khoản hiện hành `refound.terms.version` (số nguyên, bắt đầu 1) và `refound.terms.url` (trang ở R02). `MeDto` thêm `termsAccepted` (đã đồng ý đúng phiên bản hiện hành), `termsVersion`, `termsUrl`.
+- `POST /me/terms {version}`: `version` phải bằng phiên bản hiện hành, khác thì 409 `INVALID_STATE` (app tải lại `/me`); ghi `terms_version`, `terms_accepted_at`. Đồng ý lại cùng phiên bản không đổi `terms_accepted_at`.
+- `UserStatusFilter` đọc thêm `terms_version` trong cùng truy vấn theo khóa chính. Chưa đồng ý phiên bản hiện hành → 403 `TERMS_NOT_ACCEPTED`, **trừ**: `/auth/**`, `/health`, `GET`/`PATCH`/`DELETE /me`, `POST /me/terms`, `DELETE /me/push-token`. Xóa tài khoản và đăng xuất luôn phải làm được.
+- Đổi điều khoản: tăng `refound.terms.version`, mọi người đồng ý lại ở lần gọi API tiếp theo.
+- App: sau màn đặt tên (`isNew`), hoặc bất cứ khi nào `termsAccepted=false` hay nhận 403 `TERMS_NOT_ACCEPTED`, mở màn điều khoản: tóm tắt các điều cấm (nội dung vi phạm, lừa nhận đồ), link `termsUrl`, nút "Tôi đồng ý".

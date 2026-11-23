@@ -58,4 +58,4 @@ Nếu qua điểm cắt, làm theo thứ tự, mỗi mục ≤ 2 ngày-người:
 | —      | FR-TAG-02 NFC           | **Đã cắt** (22/11/2026): cần thư viện native mới (`react-native-nfc-manager`), cả nhóm build lại ở tuần cuối |
 | —      | FR-GEO-01 geofence      | **Đã cắt** (22/11/2026): vị trí nền + task nền, không ổn định giữa các hãng (R4), khó demo trong lớp         |
 
-Hạ ưu tiên trong P1 nếu tuần 2 trễ (cắt từ trên xuống): FR-AUTH-04 xóa tài khoản → chỉ đăng xuất; FR-NOTI-03 bật/tắt từng loại → một công tắc chung; C8 admin xử lý tranh chấp → admin chỉ khóa tài khoản; NFR-08 offline → bỏ persist cache.
+Hạ ưu tiên trong P1 nếu tuần 2 trễ (cắt từ trên xuống; FR-AUTH-04 xóa tài khoản **không** được cắt vì CH Play bắt buộc, D14): FR-NOTI-03 bật/tắt từng loại → một công tắc chung; C8 admin xử lý tranh chấp → admin chỉ khóa tài khoản; NFR-08 offline → bỏ persist cache.

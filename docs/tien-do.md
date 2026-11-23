@@ -39,7 +39,7 @@ _Cập nhật: 23/11/2026_
 - **Giai đoạn:** chuẩn bị (trước tuần 1). Chưa có code app ngoài khung Expo; `server/` có khung Spring rỗng + `/api/v1/health` (S07, chưa commit).
 - **Đã có:** khung Expo (commit `aea9c46`), tài liệu yêu cầu v0.2, thiết kế kiến trúc trong `docs/kien-truc/`; BRD, đề cương, `AGENTS.md`, `docs/setup.md` đã sửa theo các quyết định D1–D4 (S02). Tất cả **chưa gộp `main`**.
 - **Đang chờ:** commit + PR (chưa làm, chờ Kiên bảo). Việc cần người làm: deploy Render (S07) rồi đặt biến `SERVER_URL` (S09); S03 ở các máy còn lại; build lại development build trên máy mỗi người (S06).
-- **Làm được ngay:** P0-03 và P0-05 (khi PR P0-01, P0-02 gộp), P0-09, P0-11 (hàm thuần, chỉ cần S07), P0-04 (S06 đã thêm thư viện).
+- **Làm được ngay:** P0-03 và P0-05 (khi PR P0-01, P0-02 gộp), P0-09, P0-11 (hàm thuần, chỉ cần S07), P0-04 (S06 đã thêm thư viện); R01, R02 (không cần code, nên làm sớm vì R06 cần 14 ngày).
 - **Rủi ro:** mọi giả định U đã được chấp nhận không kiểm (D13), nên lỗi sẽ lộ lúc làm việc: U5 khi deploy Render, U13 + U17 khi build development build, U8 (model Groq preview) ở P0-10.
 
 ## Quyết định
@@ -59,6 +59,7 @@ _Cập nhật: 23/11/2026_
 | D11 | Mô tả ảnh bằng Groq `qwen/qwen3.8-27b` (vision), ghép vào chữ trước khi embed; không hiện cho người dùng; Groq lỗi thì bỏ qua                                                       | ✅ Chốt (Kiên)                          | 23/11/2026                   | ADR-02                                |
 | D12 | Bỏ S08 (không thử nghiệm model trước); bộ mẫu và số top-5 làm ở P0-13                                                                                                               | ✅ Chốt (Kiên)                          | 23/11/2026                   | ADR-02                                |
 | D13 | Chấp nhận mọi giả định U còn lại mà không kiểm trước; sai thì theo phương án dự phòng                                                                                               | ✅ Chốt (Kiên)                          | 23/11/2026                   | `docs/kien-truc/12-dieu-chua-chac.md` |
+| D14 | Phát hành lên CH Play: không cắt P1-15; thêm chặn người dùng (R03) + màn đồng ý điều khoản (R04) ngoài đề cương; làm nhóm việc R01–R07                                              | ✅ Chốt (Kiên)                          | 23/11/2026                   | Mục "Phát hành CH Play" ở dưới        |
 
 ## Việc
 
@@ -141,6 +142,20 @@ _Cập nhật: 23/11/2026_
 | H04 | Phương án dự phòng demo: màn đổi URL server ẩn, chạy server trên laptop cùng Wi-Fi          | P0-03     | `src/app/settings/server.tsx` | Chuyển sang server laptop trong dưới 1 phút          | 07 §7.5          | ⬜  |                    |
 | H05 | Tập kịch bản demo 2 lần; `pg_dump --schema=refound` trước buổi demo                         | H03, H04  |                               | Hai lần liền không lỗi, mỗi lần 5–7 phút             | 09 §9.3, 07 §7.6 | ⬜  |                    |
 | H06 | Báo cáo đồ án + khai báo dùng AI                                                            | —         |                               | Theo quy định môn                                    | AGENTS.md        | ⬜  |                    |
+
+### Phát hành CH Play (D14)
+
+Thiếu mục nào trong nhóm này thì Google Play không duyệt hoặc gỡ app (theo chính sách Google Play nhóm biết đến 23/11/2026, **đọc lại trang chính sách hiện hành trước khi làm**). Vì D14, **P1-15 không được cắt** (mục "Hạ ưu tiên" ở 10-ke-hoach-3-tuan.md). Ngoài các việc này, server trên Render free ngủ sau 15 phút (lần gọi đầu > 1 phút) và hạn mức miễn phí của Gemini, Groq, Supabase chỉ đủ vài chục người: không chặn duyệt nhưng nhóm phải chấp nhận hoặc trả phí.
+
+| Mã    | Việc                                                                                                                                                      | Cần trước         | File chính                                                                                      | Kết quả cần có                                                                                                                                                          | Thiết kế          | TT  | Người · nhánh / PR |
+| ----- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------- | ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------- | --- | ------------------ |
+| R01 ◆ | Tài khoản Google Play Console (cá nhân hoặc tổ chức), xác minh danh tính, phí 25 USD                                                                      | D14               | (Play Console)                                                                                  | Tạo được app trong Console                                                                                                                                              | —                 | ⬜  |                    |
+| R02   | Chính sách quyền riêng tư + trang web xóa tài khoản (URL công khai)                                                                                       | D14               | trang web tĩnh (GitHub Pages)                                                                   | Khai: ảnh, mô tả gửi Gemini/Groq (gói miễn phí của Gemini cho Google dùng dữ liệu để cải thiện sản phẩm), vị trí, Firebase; trang xóa tài khoản dẫn người dùng xóa được | BR-04, FR-AUTH-04 | ⬜  |                    |
+| R03   | Chặn người dùng (FR mới): không thấy tin, không nhận claim, không chat với người đã chặn                                                                  | D14, P1-05, P1-09 | `server/.../moderation/`, lọc ở `item`, `matching`, `claim`; app (nút chặn, màn danh sách chặn) | Test truy cập chéo: người bị chặn không claim, không chat được                                                                                                          | 03 §3.5, 05 C10   | ⬜  |                    |
+| R04   | Màn đồng ý điều khoản sử dụng lần đầu đăng nhập (cấm nội dung vi phạm, có kiểm duyệt)                                                                     | D14, P0-03        | `UserStatusFilter`, `POST /me/terms`, `src/app/(auth)/*`                                        | Chưa đồng ý thì không vào app được                                                                                                                                      | 03 §3.5           | ⬜  |                    |
+| R05   | Bản build AAB: profile `production` trong `eas.json`, Play App Signing, thêm **SHA-1 của khóa Play** vào Firebase, kiểm `targetSdk` đạt yêu cầu hiện hành | H03, R01          | `eas.json`, `app.config.ts`, (console Firebase)                                                 | Bản tải từ Play đăng nhập Google được                                                                                                                                   | ADR-05            | ⬜  |                    |
+| R06 ◆ | Thử nghiệm kín: ≥ 12 người tham gia liên tục 14 ngày (bắt buộc với tài khoản cá nhân mới), rồi xin lên bản chính thức                                     | R05               | (Play Console)                                                                                  | Google cho phép phát hành bản chính thức                                                                                                                                | —                 | ⬜  |                    |
+| R07   | Điền Play Console: An toàn dữ liệu (Data safety), xếp hạng nội dung, quyền vị trí/máy ảnh, ảnh chụp màn hình, mô tả tiếng Việt                            | R02, R05          | (Play Console)                                                                                  | Không còn mục báo thiếu trong Console                                                                                                                                   | —                 | ⬜  |                    |
 
 ## Ghi chú theo việc
 
@@ -238,6 +253,12 @@ Thêm mục `### <mã việc>` khi xong việc: đã làm khác thiết kế ở
 - Đã chạy server thật với `server/.env`: khởi động được, `/me` không token và `/auth/firebase` token rác đều trả 401 đúng định dạng. **Chưa thử token Google thật** (cần app, P0-03).
 - Windows: dừng `./mvnw spring-boot:run` chạy nền có thể để sót tiến trình java giữ cổng 8080; kiểm `netstat -ano | findstr :8080`.
 
+### R03, R04
+
+- 23/11/2026: thiết kế ở 03 §3.5 (BRD thêm FR-AUTH-05, FR-AUTH-06, BR-15; 05 thêm C10; 06 thêm 4 endpoint và mã `TERMS_NOT_ACCEPTED`; test X24–X29). Migration `V202611231130__moderation_blocks_terms.sql` (bảng `user_blocks`, cột `users.terms_version`, `terms_accepted_at`) **đã chạy trên Supabase**, không sửa file này nữa. Còn lại: code server, app, test X24–X29.
+- Chặn hai chiều, người bị chặn không được báo; `POST /users/{id}/block` luôn 204 để không dò được trạng thái chặn.
+- Khi R04 xong, mọi user hiện có (chưa đồng ý) sẽ bị 403 `TERMS_NOT_ACCEPTED` cho tới khi đồng ý: app phải có màn điều khoản cùng lúc.
+
 ## Nhật ký
 
 | Ngày       | Ai           | Việc                                                                                                                                                 |
@@ -255,6 +276,9 @@ Thêm mục `### <mã việc>` khi xong việc: đã làm khác thiết kế ở
 | 22/11/2026 | Kiên         | S05: Firebase Auth (Google), SHA-1, `google-services.json`, project EAS; U18 đối chiếu tài liệu                                                      |
 | 22/11/2026 | Kiên         | D10: bỏ đăng nhập SĐT + OTP, chỉ Google; sửa ADR-05, BRD v0.3 và tài liệu liên quan                                                                  |
 | 22/11/2026 | Kiên + AI    | S04: Supabase xong, server local nối pooler thành công; ghi U1, U7                                                                                   |
+| 23/11/2026 | AI (Claude)  | R03, R04: thiết kế (03 §3.5) + migration chặn người dùng, điều khoản; đã chạy trên Supabase                                                          |
+| 23/11/2026 | Kiên         | Chốt D14: phát hành lên CH Play                                                                                                                      |
+| 23/11/2026 | AI (Claude)  | Thêm D14 (chờ nhóm quyết lên CH Play) và nhóm việc R01–R07                                                                                           |
 | 23/11/2026 | AI (Claude)  | P0-02: đăng nhập Firebase → JWT, `/me`, `/users/{id}`, `UserStatusFilter`, `ProblemDetail`; test X17, X19, X23                                       |
 | 23/11/2026 | AI (Claude)  | P0-01: migration P0 + `CoreP0MigrationIT` (sửa CHECK `radius_m`, thêm 3 ràng buộc); đã chạy trên Supabase                                            |
 | 22/11/2026 | AI (Claude)  | S03 (máy Kiên), S07 phần code + đo local, S09 workflow, S10 phần Testcontainers (U9 đúng); chưa commit                                               |

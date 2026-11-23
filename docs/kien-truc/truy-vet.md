@@ -10,6 +10,8 @@ Cột "Thành phần" ghi lớp server (`module.lớp`) và feature app. "Thiế
 | FR-AUTH-02  | P0  | `auth`, `GET /users/{id}`; app `profile`                                             | 6.2, 3.2                  | X17                     | ✅                     |
 | FR-AUTH-03  | P1  | `SecurityFilterChain`, `UserStatusFilter`, `@PreAuthorize` admin                     | 3.3                       | X18, X19                | ✅                     |
 | FR-AUTH-04  | P1  | `auth.AuthService.deleteAccount`                                                     | 6.2, V16                  | IT                      | ◐                      |
+| FR-AUTH-05  | P1  | `UserStatusFilter`, `auth.ProfileService.acceptTerms`; app màn điều khoản            | 3.5, 6.2                  | X29                     | ✅                     |
+| FR-AUTH-06  | P1  | `moderation.BlockService`; lọc ở truy vấn tin, đối chiếu, claim                      | 3.5, 5.2 C10, 6.2         | X24–X28                 | ✅                     |
 | FR-ITEM-01  | P0  | `item.ItemService.create`, `SupabaseStorageClient`; app `items`                      | 1 luồng 1, ADR-06, ADR-14 | `item-form-schema`, IT  | ✅                     |
 | FR-ITEM-02  | P0  | như trên, `radius_m`                                                                 | 2.2                       | `item-form-schema`      | ✅                     |
 | FR-ITEM-03  | P0  | `GET /items` (bbox, lọc); app `(tabs)/index`                                         | 6.2                       | IT                      | ✅                     |
