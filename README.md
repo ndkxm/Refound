@@ -5,7 +5,7 @@ App tìm đồ thất lạc trong trường: đăng đồ nhặt được hoặc
 - Đề cương: [docs/ke-hoach.md](docs/ke-hoach.md)
 - Yêu cầu nghiệp vụ (để thiết kế kiến trúc): [docs/yeu-cau-nghiep-vu.md](docs/yeu-cau-nghiep-vu.md)
 - Quy ước code và quy tắc dùng AI: [AGENTS.md](AGENTS.md)
-- Thiết lập Supabase, Render, Groq, Firebase lần đầu: [docs/setup.md](docs/setup.md)
+- Thiết lập Supabase, Render, Gemini API, Groq, Firebase lần đầu: [docs/setup.md](docs/setup.md)
 
 ## Yêu cầu
 
@@ -39,17 +39,17 @@ Chỉ cần cài lại build khi nhóm thêm thư viện native hoặc đổi `a
 
 ## Lệnh thường dùng
 
-| Lệnh                     | Việc                                                |
-| ------------------------ | --------------------------------------------------- |
-| `npm start`              | Chạy dev server                                     |
-| `npm run lint`           | ESLint                                              |
-| `npm run typecheck`      | Kiểm tra kiểu TypeScript                            |
-| `npm test`               | Jest                                                |
-| `npm run check`          | Chạy cả ba lệnh trên, bắt buộc trước khi mở PR      |
-| `npm run format`         | Prettier định dạng lại code                         |
-| `npx expo install <gói>` | Cài thư viện đúng phiên bản với Expo SDK            |
-| `./mvnw spring-boot:run` | Chạy server (trong `server/`)                       |
-| `./mvnw test`            | Test server (trong `server/`)                       |
+| Lệnh                     | Việc                                           |
+| ------------------------ | ---------------------------------------------- |
+| `npm start`              | Chạy dev server                                |
+| `npm run lint`           | ESLint                                         |
+| `npm run typecheck`      | Kiểm tra kiểu TypeScript                       |
+| `npm test`               | Jest                                           |
+| `npm run check`          | Chạy cả ba lệnh trên, bắt buộc trước khi mở PR |
+| `npm run format`         | Prettier định dạng lại code                    |
+| `npx expo install <gói>` | Cài thư viện đúng phiên bản với Expo SDK       |
+| `./mvnw spring-boot:run` | Chạy server (trong `server/`)                  |
+| `./mvnw test`            | Test server (trong `server/`)                  |
 
 ## Cấu trúc thư mục
 

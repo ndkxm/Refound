@@ -4,38 +4,38 @@ Cột "Thành phần" ghi lớp server (`module.lớp`) và feature app. "Thiế
 
 ## Chức năng
 
-| Mã          | Ưu  | Thành phần                                                                           | Thiết kế                  | Test                        | TT                         |
-| ----------- | --- | ------------------------------------------------------------------------------------ | ------------------------- | --------------------------- | -------------------------- |
-| FR-AUTH-01  | P0  | `auth.AuthService`, `FirebaseTokenVerifier`, `JwtIssuer`; app `auth` (Firebase Auth) | 6.2, ADR-05               | X19, X23, `normalize-phone` | ✅ Google / SĐT (BRD v0.2) |
-| FR-AUTH-02  | P0  | `auth`, `GET /users/{id}`; app `profile`                                             | 6.2, 3.2                  | X17                         | ✅                         |
-| FR-AUTH-03  | P1  | `SecurityFilterChain`, `UserStatusFilter`, `@PreAuthorize` admin                     | 3.3                       | X18, X19                    | ✅                         |
-| FR-AUTH-04  | P1  | `auth.AuthService.deleteAccount`                                                     | 6.2, V16                  | IT                          | ◐                          |
-| FR-ITEM-01  | P0  | `item.ItemService.create`, `SupabaseStorageClient`; app `items`                      | 1 luồng 1, ADR-06, ADR-14 | `item-form-schema`, IT      | ✅                         |
-| FR-ITEM-02  | P0  | như trên, `radius_m`                                                                 | 2.2                       | `item-form-schema`          | ✅                         |
-| FR-ITEM-03  | P0  | `GET /items` (bbox, lọc); app `(tabs)/index`                                         | 6.2                       | IT                          | ✅                         |
-| FR-ITEM-04  | P0  | DTO theo người xem                                                                   | 3.3                       | X3, X6                      | ✅                         |
-| FR-ITEM-05  | P0  | `ItemStateMachine`, `ItemAccess`                                                     | 5.1 I2, I7, I13           | X1, X2                      | ✅                         |
-| FR-ITEM-06  | P1  | `moderation`, `reports`                                                              | 5.1 I10–I12               | IT                          | ◐ (V4)                     |
-| FR-ITEM-07  | P1  | `ItemDto` ký URL theo quyền                                                          | 3.2, ADR-06               | X5                          | ◐ (V13)                    |
-| FR-MATCH-01 | P0  | `matching.SearchService`, `embedding_cache`                                          | 4.3                       | IT, eval                    | ✅                         |
-| FR-MATCH-02 | P0  | `matching.domain.MatchScorer`, `MatchReasons`                                        | 4.2                       | `MatchScorerTest`           | ✅                         |
-| FR-MATCH-03 | P1  | `EmbeddingJob`, `MatchingService`, `match_candidates`                                | 4.4, ADR-01               | IT                          | ✅                         |
-| FR-MATCH-04 | P1  | `item.domain.DuplicateRule`                                                          | 4.5, ADR-18               | `DuplicateRuleTest`         | ✅                         |
-| FR-MATCH-05 | P0  | `eval/`, `@Tag("eval")`                                                              | 4.6                       | eval                        | ✅                         |
-| FR-MATCH-06 | P1  | `POST /items/{lostId}/found-reports`                                                 | 4.4                       | X8                          | ✅                         |
-| FR-CLAIM-01 | P1  | `claim.ClaimService.submit`, partial unique index                                    | 5.2 C1                    | X9, X10                     | ✅                         |
-| FR-CLAIM-02 | P1  | `ClaimStateMachine`, `AttemptPolicy`                                                 | 5.2 C2, C3, 5.3           | X12                         | ✅                         |
-| FR-CLAIM-03 | P1  | `chat.ChatService`, WS `/user/queue/events`                                          | 6.3, ADR-07               | X14, X15, X21               | ◐ (V17)                    |
-| FR-CLAIM-04 | P1  | `claim.domain.HandoverCode`, `handovers`                                             | 5.2 C5b, C6               | `HandoverCodeTest`, X13     | ✅                         |
-| FR-CLAIM-05 | P1  | `moderation` (uy tín), `reputation_events`                                           | 5.2 C6, C8                | IT, X22                     | ◐ (V5)                     |
-| FR-CLAIM-06 | P1  | `ClaimService.cancel/dispute`, `admin resolve`                                       | 5.2 C5, C7, C8            | X12                         | ◐ (V15)                    |
-| FR-NOTI-01  | P1  | `notification.NotificationService`, `ExpoPushClient`                                 | ADR-08                    | IT                          | ✅                         |
-| FR-NOTI-02  | P1  | `notifications`, app `inbox`                                                         | 6.2                       | X16                         | ✅                         |
-| FR-NOTI-03  | P1  | `users.notification_prefs`                                                           | 6.2                       | IT                          | ✅                         |
-| FR-TAG-01   | P2  | `tags`                                                                               | 6.2 P2, 10.4              | —                           | ◐ chỉ nếu qua điểm cắt     |
-| FR-TAG-02   | P2  | —                                                                                    | 10.4                      | —                           | ✂ đã cắt                   |
-| FR-GEO-01   | P2  | —                                                                                    | 10.4                      | —                           | ✂ đã cắt                   |
-| FR-HEAT-01  | P2  | `GET /stats/heatmap`                                                                 | 6.2 P2                    | —                           | ◐ chỉ nếu qua điểm cắt     |
+| Mã          | Ưu  | Thành phần                                                                           | Thiết kế                  | Test                    | TT                     |
+| ----------- | --- | ------------------------------------------------------------------------------------ | ------------------------- | ----------------------- | ---------------------- |
+| FR-AUTH-01  | P0  | `auth.AuthService`, `FirebaseTokenVerifier`, `JwtIssuer`; app `auth` (Firebase Auth) | 6.2, ADR-05               | X19, X23                | ✅ Google (BRD v0.3)   |
+| FR-AUTH-02  | P0  | `auth`, `GET /users/{id}`; app `profile`                                             | 6.2, 3.2                  | X17                     | ✅                     |
+| FR-AUTH-03  | P1  | `SecurityFilterChain`, `UserStatusFilter`, `@PreAuthorize` admin                     | 3.3                       | X18, X19                | ✅                     |
+| FR-AUTH-04  | P1  | `auth.AuthService.deleteAccount`                                                     | 6.2, V16                  | IT                      | ◐                      |
+| FR-ITEM-01  | P0  | `item.ItemService.create`, `SupabaseStorageClient`; app `items`                      | 1 luồng 1, ADR-06, ADR-14 | `item-form-schema`, IT  | ✅                     |
+| FR-ITEM-02  | P0  | như trên, `radius_m`                                                                 | 2.2                       | `item-form-schema`      | ✅                     |
+| FR-ITEM-03  | P0  | `GET /items` (bbox, lọc); app `(tabs)/index`                                         | 6.2                       | IT                      | ✅                     |
+| FR-ITEM-04  | P0  | DTO theo người xem                                                                   | 3.3                       | X3, X6                  | ✅                     |
+| FR-ITEM-05  | P0  | `ItemStateMachine`, `ItemAccess`                                                     | 5.1 I2, I7, I13           | X1, X2                  | ✅                     |
+| FR-ITEM-06  | P1  | `moderation`, `reports`                                                              | 5.1 I10–I12               | IT                      | ◐ (V4)                 |
+| FR-ITEM-07  | P1  | `ItemDto` ký URL theo quyền                                                          | 3.2, ADR-06               | X5                      | ◐ (V13)                |
+| FR-MATCH-01 | P0  | `matching.SearchService`, `embedding_cache`                                          | 4.3                       | IT, eval                | ✅                     |
+| FR-MATCH-02 | P0  | `matching.domain.MatchScorer`, `MatchReasons`                                        | 4.2                       | `MatchScorerTest`       | ✅                     |
+| FR-MATCH-03 | P1  | `EmbeddingJob`, `MatchingService`, `match_candidates`                                | 4.4, ADR-01               | IT                      | ✅                     |
+| FR-MATCH-04 | P1  | `item.domain.DuplicateRule`                                                          | 4.5, ADR-18               | `DuplicateRuleTest`     | ✅                     |
+| FR-MATCH-05 | P0  | `eval/`, `@Tag("eval")`                                                              | 4.6                       | eval                    | ✅                     |
+| FR-MATCH-06 | P1  | `POST /items/{lostId}/found-reports`                                                 | 4.4                       | X8                      | ✅                     |
+| FR-CLAIM-01 | P1  | `claim.ClaimService.submit`, partial unique index                                    | 5.2 C1                    | X9, X10                 | ✅                     |
+| FR-CLAIM-02 | P1  | `ClaimStateMachine`, `AttemptPolicy`                                                 | 5.2 C2, C3, 5.3           | X12                     | ✅                     |
+| FR-CLAIM-03 | P1  | `chat.ChatService`, WS `/user/queue/events`                                          | 6.3, ADR-07               | X14, X15, X21           | ◐ (V17)                |
+| FR-CLAIM-04 | P1  | `claim.domain.HandoverCode`, `handovers`                                             | 5.2 C5b, C6               | `HandoverCodeTest`, X13 | ✅                     |
+| FR-CLAIM-05 | P1  | `moderation` (uy tín), `reputation_events`                                           | 5.2 C6, C8                | IT, X22                 | ◐ (V5)                 |
+| FR-CLAIM-06 | P1  | `ClaimService.cancel/dispute`, `admin resolve`                                       | 5.2 C5, C7, C8            | X12                     | ◐ (V15)                |
+| FR-NOTI-01  | P1  | `notification.NotificationService`, `ExpoPushClient`                                 | ADR-08                    | IT                      | ✅                     |
+| FR-NOTI-02  | P1  | `notifications`, app `inbox`                                                         | 6.2                       | X16                     | ✅                     |
+| FR-NOTI-03  | P1  | `users.notification_prefs`                                                           | 6.2                       | IT                      | ✅                     |
+| FR-TAG-01   | P2  | `tags`                                                                               | 6.2 P2, 10.4              | —                       | ◐ chỉ nếu qua điểm cắt |
+| FR-TAG-02   | P2  | —                                                                                    | 10.4                      | —                       | ✂ đã cắt               |
+| FR-GEO-01   | P2  | —                                                                                    | 10.4                      | —                       | ✂ đã cắt               |
+| FR-HEAT-01  | P2  | `GET /stats/heatmap`                                                                 | 6.2 P2                    | —                       | ◐ chỉ nếu qua điểm cắt |
 
 ## Quy tắc nghiệp vụ
 

@@ -26,7 +26,6 @@ flowchart LR
   M0["P0-01 Migration P0 gộp main<br/>(N2) ◆ cổng"] --> AU & IT
   AU["P0-02/03 Đăng nhập + JWT<br/>(N2–3)"] --> AP
   IT["P0-05/06 API tin"] --> AP["P0-07/08 Màn đăng tin, bản đồ"]
-  S08["S08 Thử nghiệm Q3<br/>(N1–3)"] --> SE
   IT --> SE["P0-10..12 Embedding + tìm kiếm<br/>(N4–5)"]
   SE --> AM["P1-02 Đối chiếu nền"] --> NO["P1-03/04 Thông báo + push"]
   SM["P0-09 Máy trạng thái thuần<br/>(T1, không phụ thuộc ai)"] --> CL
@@ -38,11 +37,11 @@ N = ngày, T = tuần. Việc không có mũi tên vào có thể bắt đầu n
 
 ## 10.3 Lịch
 
-| Tuần                   | Mục tiêu                                                                                                                                                                         | Mốc cuối tuần (Thứ Sáu)                                                                                                                                               |
-| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **1: P0**              | N1–2: các việc S (chuẩn bị, đo đạc Q3/Q7/U13/U16), migration P0. Song song: máy trạng thái thuần + test, chụp ảnh bộ mẫu. N3–5: đăng nhập, đăng tin, danh sách, bản đồ, tìm kiếm | Đăng nhập (Google và SĐT thử) → đăng tin có ảnh → thấy trên bản đồ → tìm bằng chữ ra đúng món, trên máy thật, qua server Render. Có số top-5 đầu tiên. Q3, Q7 đã chốt |
-| **2: P1**              | Đối chiếu nền + push, claim + QR, chat, thông báo trong app, báo cáo + uy tín, ảnh nhạy cảm, báo khớp chủ động, chống trùng, hết hạn                                             | Chạy trọn kịch bản demo 9.3 trên 2 máy; mọi test X1–X23 xanh                                                                                                          |
-| **3: P2 + hoàn thiện** | N1–2: P2 nếu qua điểm cắt. N3–4: chỉnh trọng số, sửa lỗi, rà quyền theo ma trận, APK. N5: tập demo 2 lần, báo cáo                                                                | APK cuối; báo cáo; số top-5 cuối                                                                                                                                      |
+| Tuần                   | Mục tiêu                                                                                                                                                                     | Mốc cuối tuần (Thứ Sáu)                                                                                                                                  |
+| ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1: P0**              | N1–2: các việc S (chuẩn bị, đo đạc Q3/Q7/U13), migration P0. Song song: máy trạng thái thuần + test, chụp ảnh bộ mẫu. N3–5: đăng nhập, đăng tin, danh sách, bản đồ, tìm kiếm | Đăng nhập Google → đăng tin có ảnh → thấy trên bản đồ → tìm bằng chữ ra đúng món, trên máy thật, qua server Render. Có số top-5 đầu tiên. Q3, Q7 đã chốt |
+| **2: P1**              | Đối chiếu nền + push, claim + QR, chat, thông báo trong app, báo cáo + uy tín, ảnh nhạy cảm, báo khớp chủ động, chống trùng, hết hạn                                         | Chạy trọn kịch bản demo 9.3 trên 2 máy; mọi test X1–X23 xanh                                                                                             |
+| **3: P2 + hoàn thiện** | N1–2: P2 nếu qua điểm cắt. N3–4: chỉnh trọng số, sửa lỗi, rà quyền theo ma trận, APK. N5: tập demo 2 lần, báo cáo                                                            | APK cuối; báo cáo; số top-5 cuối                                                                                                                         |
 
 Chiều Thứ Sáu mỗi tuần: demo nội bộ trên máy thật, cập nhật mục "Tình hình hiện tại" trong `tien-do.md`.
 

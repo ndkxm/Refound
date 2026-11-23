@@ -4,41 +4,41 @@ Mọi hạn mức dưới đây là **giả định chưa kiểm chứng**; các
 
 ## 7.1 Hạn mức và mức dùng dự kiến
 
-| Dịch vụ            | Hạn mức free _(giả định)_                                                             | Dự kiến dùng (300 tin, 10 người)                                                            | Dư địa                                                          | Kiểm tra |
-| ------------------ | ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- | --------------------------------------------------------------- | -------- |
-| Supabase Postgres  | 500 MB; tạm dừng sau 7 ngày không hoạt động                                           | < 20 MB                                                                                     | Rất lớn                                                         | U1       |
-| Supabase Storage   | 1 GB lưu, ~5 GB băng thông/tháng                                                      | 300 tin × 4 ảnh × (~250 KB lớn + ~50 KB nhỏ) ≈ 360 MB tối đa; thực tế ~1,5 ảnh/tin ≈ 135 MB | Đủ                                                              | U1       |
-| Render web service | 512 MB RAM, 0,1 CPU, ngủ sau 15 phút, 750 giờ/tháng                                   | 1 service                                                                                   | Đủ giờ; RAM là rủi ro                                           | U4, U5   |
-| Jina               | ~10 triệu token (có thể không làm mới)                                                | 300 tin × (1,5 ảnh × ~4.000 + ~50 chữ) ≈ 1,8 triệu + thử nghiệm 0,24 triệu + tìm kiếm       | Đủ nếu ~4.000 token/ảnh; rủi ro nếu một ảnh tốn nhiều hơn nhiều | U2       |
-| Groq               | Giới hạn theo phút/ngày cho từng model                                                | 0 ở phương án A; ~1 request/ảnh ở phương án B                                               | Đủ                                                              | U8       |
-| Expo Push          | Miễn phí, giới hạn theo giây                                                          | Vài chục/ngày                                                                               | Rất lớn                                                         | —        |
-| Firebase Auth      | Đăng nhập Google miễn phí; **SMS OTP có thể phải trả tiền hoặc cần gói Blaze có thẻ** | 10 người, mỗi người 1–2 lần OTP                                                             | Không rõ                                                        | U16      |
-| GitHub Actions     | Miễn phí cho repo public; 2.000 phút/tháng repo private                               | CI ~5 phút × ~100 lần + cron 1 phút/ngày                                                    | Đủ                                                              | —        |
+| Dịch vụ                              | Hạn mức free _(giả định)_                                                                                               | Dự kiến dùng (300 tin, 10 người)                                                            | Dư địa                                 | Kiểm tra |
+| ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- | -------------------------------------- | -------- |
+| Supabase Postgres                    | 500 MB; tạm dừng sau 7 ngày không hoạt động                                                                             | < 20 MB                                                                                     | Rất lớn                                | U1       |
+| Supabase Storage                     | 1 GB lưu, ~5 GB băng thông/tháng                                                                                        | 300 tin × 4 ảnh × (~250 KB lớn + ~50 KB nhỏ) ≈ 360 MB tối đa; thực tế ~1,5 ảnh/tin ≈ 135 MB | Đủ                                     | U1       |
+| Render web service                   | 512 MB RAM, 0,1 CPU, ngủ sau 15 phút, 750 giờ/tháng                                                                     | 1 service                                                                                   | Đủ giờ; RAM là rủi ro                  | U4, U5   |
+| Gemini API (embedding)               | Miễn phí; giới hạn request theo phút/ngày cho mỗi project (số cụ thể ở AI Studio), RPD làm mới lúc nửa đêm giờ Pacific  | 300 tin × (1,5 ảnh + 1 chữ) ≈ 750 lời gọi rải trong 3 tuần + thử nghiệm ~120 + tìm kiếm     | Đủ nếu hạn mức ngày ≥ vài trăm request | U2       |
+| Groq (`qwen/qwen3.8-27b`, mô tả ảnh) | Tài liệu 23/11/2026: 30 request/phút, 1.000 request/ngày (bảng Developer, số gói free cần xem ở console); model preview | ~1 lời gọi/tin có ảnh ≈ 300 trong 3 tuần + bộ mẫu ~30                                       | Đủ; lỗi thì bỏ mô tả, không chặn       | U8       |
+| Expo Push                            | Miễn phí, giới hạn theo giây                                                                                            | Vài chục/ngày                                                                               | Rất lớn                                | —        |
+| Firebase Auth                        | Đăng nhập Google miễn phí                                                                                               | 10 người                                                                                    | Không                                  | —        |
+| GitHub Actions                       | Miễn phí cho repo public; 2.000 phút/tháng repo private                                                                 | CI ~5 phút × ~100 lần + cron 1 phút/ngày                                                    | Đủ                                     | —        |
 
 ## 7.2 Giảm số lần gọi AI
 
-| Cách                                                                           | Ở đâu                             |
-| ------------------------------------------------------------------------------ | --------------------------------- |
-| Embed **một lần** khi tạo/sửa tin; lưu vector, không bao giờ embed lại khi đọc | `item_embeddings`                 |
-| Embed ảnh nhỏ 512px (giả định 1 ô = 1 đơn vị token), không gửi ảnh lớn         | App resize; job dùng `thumb_path` |
-| Cache vector câu truy vấn theo hash                                            | `embedding_cache`                 |
-| Không gửi ảnh danh mục nhạy cảm (BR-08)                                        | Job                               |
-| Bộ đánh giá lưu vector vào file, chạy lại không gọi API                        | `eval/cache-*.json`               |
-| Dữ liệu demo nạp kèm vector có sẵn                                             | Lệnh seed                         |
-| Không gọi Groq ở phương án A                                                   | ADR-02                            |
+| Cách                                                                                        | Ở đâu                             |
+| ------------------------------------------------------------------------------------------- | --------------------------------- |
+| Embed và mô tả ảnh **một lần** khi tạo/sửa tin; lưu vector, không bao giờ embed lại khi đọc | `item_embeddings`                 |
+| Embed ảnh nhỏ 512px (giả định 1 ô = 1 đơn vị token), không gửi ảnh lớn                      | App resize; job dùng `thumb_path` |
+| Cache vector câu truy vấn theo hash                                                         | `embedding_cache`                 |
+| Không gửi ảnh danh mục nhạy cảm cho Gemini, Groq (BR-08)                                    | Job                               |
+| Bộ đánh giá lưu vector vào file, chạy lại không gọi API                                     | `eval/cache-*.json`               |
+| Dữ liệu demo nạp kèm vector có sẵn                                                          | Lệnh seed                         |
 
 ## 7.3 Hàng đợi thử lại (NFR-05)
 
 Không có hàng đợi riêng: cột `embedding_status`, `embedding_attempts`, `next_embed_at` trên `items` **là** hàng đợi (ADR-01).
 
-| Tình huống                      | Xử lý                                                                                                                                                                                |
-| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Jina lỗi mạng / 5xx             | `attempts+1`, `next_embed_at = now() + 2^(attempts−1) phút`; tối đa 6 lần → `failed`                                                                                                 |
-| Jina 429 / 402 (hết hạn mức)    | Như trên + `AiCircuit.pauseUntil = now()+5 phút`: job và `/search` bỏ qua Jina tới lúc đó                                                                                            |
-| Server bị Render tắt giữa chừng | Transaction chưa commit thì rollback; tin vẫn `pending`; lần thức sau job `@Scheduled` vét lại                                                                                       |
-| Hết hẳn token Jina              | Đổi `EMBEDDING_PROVIDER=gemini` (phương án B, cùng 768 chiều, interface `EmbeddingClient`), đặt lại `pending` cho mọi tin. **Không trộn** vector hai model: cột `model` cho phép lọc |
-| Expo Push lỗi                   | Thông báo đã nằm trong `notifications`; app thấy trong hộp thông báo. Không thử lại push (shortcut, đủ cho demo)                                                                     |
-| Storage lỗi khi đăng tin        | Trả 503, không ghi DB; app giữ bản nháp (NFR-08) và cho thử lại                                                                                                                      |
+| Tình huống                      | Xử lý                                                                                                                                                                                                                                                                                               |
+| ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Gemini lỗi mạng / 5xx           | `attempts+1`, `next_embed_at = now() + 2^(attempts−1) phút`; tối đa 6 lần → `failed`                                                                                                                                                                                                                |
+| Gemini 429 (hết hạn mức)        | Như trên + `AiCircuit.pauseUntil = now()+5 phút`: job và `/search` bỏ qua Gemini tới lúc đó                                                                                                                                                                                                         |
+| Groq lỗi / 429 / model bị gỡ    | Bỏ mô tả ảnh của lượt này, embed tiếp ngay; không tính `attempts`, không thử lại mô tả. Model bị gỡ → đổi `GROQ_VISION_MODEL` hoặc để trống                                                                                                                                                         |
+| Server bị Render tắt giữa chừng | Transaction chưa commit thì rollback; tin vẫn `pending`; lần thức sau job `@Scheduled` vét lại                                                                                                                                                                                                      |
+| Hết hạn mức ngày của Gemini     | Như dòng 429: tin nằm `pending`, lần lùi dần sau thử lại; hạn mức làm mới lúc nửa đêm giờ Pacific (khoảng 14–15 giờ Việt Nam). Trước demo dùng dữ liệu đã có vector sẵn (lệnh seed). Đổi model sau này thì đặt lại `pending` cho mọi tin; **không trộn** vector hai model, cột `model` cho phép lọc |
+| Expo Push lỗi                   | Thông báo đã nằm trong `notifications`; app thấy trong hộp thông báo. Không thử lại push (shortcut, đủ cho demo)                                                                                                                                                                                    |
+| Storage lỗi khi đăng tin        | Trả 503, không ghi DB; app giữ bản nháp (NFR-08) và cho thử lại                                                                                                                                                                                                                                     |
 
 ## 7.4 Giới hạn tần suất
 
@@ -48,7 +48,7 @@ Một instance duy nhất, nên đếm trong DB hoặc bộ nhớ là đủ, kh�
 | ------------------------ | ----------------------------------------------------------------------------------------------------------- |
 | BR-09: 10 tin/người/24h  | `count(*) from items where author_id=? and created_at > now()-24h`                                          |
 | BR-05: số lần bị từ chối | `count(*) from claims where claimant_id=? and found_item_id=? and status='rejected'` so với `AttemptPolicy` |
-| Đăng nhập                | Không cần ở server: không có mật khẩu để dò; Firebase tự giới hạn số lần gửi OTP                            |
+| Đăng nhập                | Không cần ở server: không có mật khẩu để dò                                                                 |
 | Tin nhắn: 30/phút/người  | Bộ nhớ, như trên                                                                                            |
 | Kích thước               | Ảnh ≤ 1 MB, request ≤ 6 MB (`spring.servlet.multipart`)                                                     |
 
