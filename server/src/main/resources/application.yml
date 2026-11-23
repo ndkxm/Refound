@@ -21,6 +21,9 @@ spring:
     password: ${DATABASE_PASSWORD:postgres}
     hikari:
       maximum-pool-size: 3
+      # pgvector, PostGIS nằm ở schema extensions (02, U7): đặt search_path cho mọi kết nối thay vì tin vào
+      # currentSchema trong URL (kết nối Testcontainers không có tham số này).
+      connection-init-sql: set search_path to refound, extensions
   flyway:
     schemas: refound
     default-schema: refound

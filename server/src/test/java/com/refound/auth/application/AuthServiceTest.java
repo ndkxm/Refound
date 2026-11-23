@@ -31,8 +31,8 @@ class AuthServiceTest {
 
     @Test
     void jpegDetectedByMagicBytes() {
-        assertThat(ProfileService.isJpeg(new byte[] {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF, 0x00})).isTrue();
-        assertThat(ProfileService.isJpeg("\u0089PNG".getBytes(java.nio.charset.StandardCharsets.ISO_8859_1))).isFalse();
-        assertThat(ProfileService.isJpeg(new byte[] {(byte) 0xFF, (byte) 0xD8})).isFalse();
+        assertThat(com.refound.common.Jpeg.isJpeg(new byte[] {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF, 0x00})).isTrue();
+        assertThat(com.refound.common.Jpeg.isJpeg("\u0089PNG".getBytes(java.nio.charset.StandardCharsets.ISO_8859_1))).isFalse();
+        assertThat(com.refound.common.Jpeg.isJpeg(new byte[] {(byte) 0xFF, (byte) 0xD8})).isFalse();
     }
 }
