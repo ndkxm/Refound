@@ -2,11 +2,6 @@
 
 App tìm đồ thất lạc trong trường: đăng đồ nhặt được hoặc làm mất kèm ảnh và vị trí, tự đối chiếu bằng vector search, xác minh chủ nhân trước khi bàn giao. Đồ án môn IE307.
 
-- Đề cương: [docs/ke-hoach.md](docs/ke-hoach.md)
-- Yêu cầu nghiệp vụ (để thiết kế kiến trúc): [docs/yeu-cau-nghiep-vu.md](docs/yeu-cau-nghiep-vu.md)
-- Quy ước code và quy tắc dùng AI: [AGENTS.md](AGENTS.md)
-- Thiết lập Supabase, Render, Gemini API, Groq, Firebase lần đầu: [docs/setup.md](docs/setup.md)
-
 ## Yêu cầu
 
 - Node.js 22.13+ hoặc 24.3+
