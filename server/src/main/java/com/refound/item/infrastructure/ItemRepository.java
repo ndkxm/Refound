@@ -47,6 +47,14 @@ public class ItemRepository {
         return jdbc.query("select " + COLUMNS + FROM + "where i.id = ?", ItemRepository::map, id).stream().findFirst();
     }
 
+    public List<Item> findByIds(Collection<UUID> ids) {
+        if (ids.isEmpty()) {
+            return List.of();
+        }
+        return jdbc.query("select " + COLUMNS + FROM + "where i.id = any(?)",
+                ps -> ps.setArray(1, ps.getConnection().createArrayOf("uuid", ids.toArray())), ItemRepository::map);
+    }
+
     /** Ảnh của nhiều tin trong một truy vấn, theo tin rồi theo vị trí. */
     public List<ItemImage> findImages(Collection<UUID> itemIds) {
         if (itemIds.isEmpty()) {

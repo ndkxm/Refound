@@ -6,6 +6,7 @@ import com.refound.common.ApiException;
 import com.refound.common.ApiException.FieldError;
 import com.refound.common.CurrentUser;
 import com.refound.common.GeoPoint;
+import com.refound.common.LatLng;
 import com.refound.item.application.ItemDtos.ItemOwnerDto;
 import com.refound.item.application.ItemDtos.ItemSummaryDto;
 import com.refound.item.application.ItemDtos.Page;
@@ -251,12 +252,4 @@ public class ItemController {
     }
 
     record CloseRequest(String reason) {}
-
-    /** {@code {"lat", "lng"}}; thiếu một trong hai thì coi như không có vị trí (không âm thầm thành 0). */
-    record LatLng(Double lat, Double lng) {
-
-        GeoPoint toPoint() {
-            return lat == null || lng == null ? null : new GeoPoint(lat, lng);
-        }
-    }
 }

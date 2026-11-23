@@ -35,7 +35,7 @@ public class AiCircuit {
     }
 
     /** Cho test. */
-    void reset() {
+    public void reset() {
         pausedUntil = Instant.MIN;
     }
 }

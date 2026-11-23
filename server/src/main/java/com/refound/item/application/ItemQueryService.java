@@ -61,6 +61,19 @@ public class ItemQueryService {
                 .orElseThrow(ItemQueryService::notFound);
     }
 
+    /**
+     * Dòng danh sách cho các tin {@code ids} (tìm kiếm, đối chiếu), giữ thứ tự của {@code ids}, bỏ id không còn.
+     * Không kiểm quyền: người gọi đã chỉ chọn tin công khai ({@code open}, chưa xóa) trong SQL của mình.
+     */
+    public Map<UUID, ItemSummaryDto> summaries(List<UUID> ids) {
+        Map<UUID, Item> byId = items.findByIds(ids).stream().collect(Collectors.toMap(Item::id, i -> i));
+        List<Item> ordered = ids.stream().map(byId::get).filter(java.util.Objects::nonNull).toList();
+        List<ItemSummaryDto> dtos = views.summaries(ordered, imagesOf(ordered));
+        Map<UUID, ItemSummaryDto> out = new java.util.LinkedHashMap<>();
+        dtos.forEach(d -> out.put(d.id(), d));
+        return out;
+    }
+
     private Map<UUID, List<ItemImage>> imagesOf(List<Item> page) {
         return items.findImages(page.stream().map(Item::id).toList()).stream()
                 .collect(Collectors.groupingBy(ItemImage::itemId));
