@@ -56,18 +56,21 @@ Lưu ý: điểm khớp, máy trạng thái, phân quyền **không** nằm ở 
 
 Gói native, cài bằng `npx expo install`, build lại development build **một lần cho cả nhóm**:
 
-| Gói                                                         | Dùng cho                                        | Có cách tránh không                                                     |
-| ----------------------------------------------------------- | ----------------------------------------------- | ----------------------------------------------------------------------- |
-| `expo-image-picker`                                         | Chụp/chọn ảnh                                   | Không                                                                   |
-| `expo-image-manipulator`                                    | Resize trước khi upload                         | Không (resize ở server tốn RAM 512 MB)                                  |
-| `expo-location`                                             | Vị trí hiện tại                                 | Không                                                                   |
-| `expo-camera`                                               | Quét QR bàn giao                                | Không                                                                   |
-| `@maplibre/maplibre-react-native`                           | Bản đồ (đã chốt)                                | Không                                                                   |
-| `expo-secure-store`                                         | Lưu JWT, URL server dự phòng                    | Không                                                                   |
-| `@react-native-async-storage/async-storage`                 | Persist cache TanStack Query, bản nháp (NFR-08) | Có thể bỏ nếu cắt NFR-08                                                |
-| `react-native-svg`                                          | Vẽ QR (cùng `react-native-qrcode-svg`)          | Không                                                                   |
-| `@react-native-firebase/app`, `@react-native-firebase/auth` | Đăng nhập Google qua Firebase (ADR-05)          | Có: server kiểm tra thẳng Google ID token; nhóm chọn giữ Firebase (D10) |
-| `@react-native-google-signin/google-signin`                 | Lấy credential Google để đưa vào Firebase       | Có thể thay bằng `expo-auth-session`, nhưng luồng trình duyệt kém hơn   |
+| Gói                                                         | Dùng cho                                                     | Có cách tránh không                                                     |
+| ----------------------------------------------------------- | ------------------------------------------------------------ | ----------------------------------------------------------------------- |
+| `expo-image-picker`                                         | Chụp/chọn ảnh                                                | Không                                                                   |
+| `expo-image-manipulator`                                    | Resize trước khi upload                                      | Không (resize ở server tốn RAM 512 MB)                                  |
+| `expo-location`                                             | Vị trí hiện tại                                              | Không                                                                   |
+| `expo-camera`                                               | Quét QR bàn giao                                             | Không                                                                   |
+| `@maplibre/maplibre-react-native`                           | Bản đồ (đã chốt)                                             | Không                                                                   |
+| `expo-secure-store`                                         | Lưu JWT, URL server dự phòng                                 | Không                                                                   |
+| `@react-native-async-storage/async-storage`                 | Persist cache TanStack Query, bản nháp (NFR-08)              | Có thể bỏ nếu cắt NFR-08                                                |
+| `react-native-svg`                                          | Vẽ QR (cùng `react-native-qrcode-svg`)                       | Không                                                                   |
+| `@react-native-firebase/app`, `@react-native-firebase/auth` | Đăng nhập Google qua Firebase (ADR-05)                       | Có: server kiểm tra thẳng Google ID token; nhóm chọn giữ Firebase (D10) |
+| `@react-native-google-signin/google-signin`                 | Lấy credential Google để đưa vào Firebase                    | Có thể thay bằng `expo-auth-session`, nhưng luồng trình duyệt kém hơn   |
+| `expo-device`                                               | Kiểm `Device.isDevice` trước khi lấy push token              | Không                                                                   |
+| `@react-native-community/netinfo`                           | `onlineManager` của TanStack Query (NFR-08)                  | Có thể dùng `expo-network`                                              |
+| `react-native-keyboard-controller`                          | Bàn phím không che ô nhập (chat, form) khi Android tràn viền | Không ổn với `KeyboardAvoidingView`                                     |
 
 Gói JS thuần (không cần build lại): `@tanstack/react-query`, `@tanstack/query-async-storage-persister`, `zustand`, `react-hook-form`, `zod`, `@hookform/resolvers`, `@stomp/stompjs`, `react-native-qrcode-svg`; dev: `openapi-typescript`.
 

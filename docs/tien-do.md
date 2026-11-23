@@ -180,6 +180,7 @@ Thêm mục `### <mã việc>` khi xong việc: đã làm khác thiết kế ở
 ### S06
 
 - 23/11/2026: cài bằng `npx expo install` mọi gói ở 8.1, thêm `@tanstack/react-query-persist-client` (cần cho persist cache). `npx expo install --check` báo khớp SDK 58; `npx expo config --type prebuild` nhận đủ plugin.
+- 23/11/2026 (sau): thêm `expo-device`, `@react-native-community/netinfo`, `react-native-keyboard-controller` (rà P0–P2 thấy còn thiếu, tránh build lại). `react-native-view-shot` + `expo-sharing` cho FR-TAG-01 (P2) chưa cài.
 - Plugin trong `app.config.ts`: MapLibre, secure-store, `@react-native-firebase/app` + `auth`, google-signin, `expo-location` / `expo-camera` / `expo-image-picker` (chuỗi xin quyền tiếng Việt, tắt micro).
 - **Chưa cài `openapi-typescript`**: bản 7.13 đòi peer `typescript@^5`, repo dùng TypeScript 6. Khi cần sinh `src/types/api.d.ts` thì chạy `npx openapi-typescript@7 …` không cài vào repo.
 - npm chặn script postinstall của `@firebase/util`, `protobufjs` (chính sách install-scripts mới của npm); chưa thấy ảnh hưởng, nếu build lỗi thì `npm install-scripts approve <gói>`.
