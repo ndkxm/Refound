@@ -1,0 +1,20 @@
+# Gọi /health?db=true 1 lần/ngày để chạm DB (tránh Supabase tạm dừng), không phải ping giữ Render thức.
+# Xem docs/kien-truc/07-chiu-loi-chi-phi.md 7.5. Cần biến repo SERVER_URL (Settings → Variables), ví dụ https://refound.onrender.com
+name: Health cron
+
+on:
+  schedule:
+    - cron: '0 1 * * *' # 08:00 giờ Việt Nam
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: GET /api/v1/health?db=true
+        env:
+          SERVER_URL: ${{ vars.SERVER_URL }}
+        run: |
+          test -n "$SERVER_URL" || { echo "Chưa đặt biến SERVER_URL"; exit 1; }
+          # Render free cần tới ~90 s để thức
+          curl -fsS --retry 3 --retry-all-errors --retry-delay 10 --max-time 120 "$SERVER_URL/api/v1/health?db=true"
