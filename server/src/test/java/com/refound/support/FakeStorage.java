@@ -29,6 +29,15 @@ public class FakeStorage implements StorageClient {
     }
 
     @Override
+    public byte[] download(String path) {
+        byte[] bytes = files.get(path);
+        if (bytes == null) {
+            throw new ResourceAccessException("Không có file " + path);
+        }
+        return bytes;
+    }
+
+    @Override
     public Map<String, String> signedUrls(Collection<String> paths, Duration ttl) {
         return paths.stream().filter(files::containsKey)
                 .collect(Collectors.toMap(p -> p, p -> "https://storage.test/" + p));

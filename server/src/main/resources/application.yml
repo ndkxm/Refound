@@ -47,3 +47,15 @@ refound:
     url: ${SUPABASE_URL:}
     key: ${SUPABASE_SERVICE_ROLE_KEY:}
     bucket: ${SUPABASE_STORAGE_BUCKET:item-images}
+  ai:
+    gemini:
+      url: https://generativelanguage.googleapis.com/v1beta
+      key: ${GEMINI_API_KEY:}
+      model: ${GEMINI_EMBEDDING_MODEL:gemini-embedding-2} # đổi model phải embed lại toàn bộ (ADR-02)
+    groq:
+      url: https://api.groq.com/openai/v1
+      key: ${GROQ_API_KEY:} # để trống thì tắt mô tả ảnh (ADR-02)
+      model: ${GROQ_VISION_MODEL:qwen/qwen3.8-27b}
+  embedding:
+    enabled: true
+    poll-ms: 30000 # 4.4: vét việc sót mỗi 30 giây

@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -48,15 +49,17 @@ public class ItemService {
     private final StorageClient storage;
     private final ItemViews views;
     private final TransactionTemplate tx;
+    private final ApplicationEventPublisher events;
     private final Clock clock;
 
     public ItemService(ItemRepository items, CategoryRepository categories, StorageClient storage, ItemViews views,
-            TransactionTemplate tx, Clock clock) {
+            TransactionTemplate tx, ApplicationEventPublisher events, Clock clock) {
         this.items = items;
         this.categories = categories;
         this.storage = storage;
         this.views = views;
         this.tx = tx;
+        this.events = events;
         this.clock = clock;
     }
 
@@ -95,6 +98,7 @@ public class ItemService {
             if (draft.type() == ItemType.FOUND) {
                 items.upsertSecret(id, draft.question(), draft.answer());
             }
+            events.publishEvent(new ItemContentChanged(id)); // job embedding chạy sau commit (I1)
         });
         return views.owner(item, stored);
     }
@@ -150,6 +154,7 @@ public class ItemService {
             }
             if (reembed) {
                 items.deleteEmbeddings(id); // I2: vector cũ không còn đúng với nội dung mới
+                events.publishEvent(new ItemContentChanged(id));
             }
             if (item.type() == ItemType.FOUND
                     && (secret == null || !merged.question().equals(secret.question()) || !merged.answer().equals(secret.answer()))) {
