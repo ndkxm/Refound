@@ -180,6 +180,7 @@ Thêm mục `### <mã việc>` khi xong việc: đã làm khác thiết kế ở
 ### S06
 
 - 23/11/2026: cài bằng `npx expo install` mọi gói ở 8.1, thêm `@tanstack/react-query-persist-client` (cần cho persist cache). `npx expo install --check` báo khớp SDK 58; `npx expo config --type prebuild` nhận đủ plugin.
+- 23/11/2026 (sau): thêm `expo-device`, `@react-native-community/netinfo`, `react-native-keyboard-controller` (rà P0–P2 thấy còn thiếu, tránh build lại). `react-native-view-shot` + `expo-sharing` cho FR-TAG-01 (P2) chưa cài.
 - Plugin trong `app.config.ts`: MapLibre, secure-store, `@react-native-firebase/app` + `auth`, google-signin, `expo-location` / `expo-camera` / `expo-image-picker` (chuỗi xin quyền tiếng Việt, tắt micro).
 - **Chưa cài `openapi-typescript`**: bản 7.13 đòi peer `typescript@^5`, repo dùng TypeScript 6. Khi cần sinh `src/types/api.d.ts` thì chạy `npx openapi-typescript@7 …` không cài vào repo.
 - npm chặn script postinstall của `@firebase/util`, `protobufjs` (chính sách install-scripts mới của npm); chưa thấy ảnh hưởng, nếu build lỗi thì `npm install-scripts approve <gói>`.
@@ -223,6 +224,7 @@ Thêm mục `### <mã việc>` khi xong việc: đã làm khác thiết kế ở
 | 22/11/2026 | AI (Claude)  | S02: sửa BRD v0.2, đề cương, `AGENTS.md`, `docs/setup.md`; chốt D4 (cắt NFC, geofence)                                                               |
 | 22/11/2026 | AI (Claude)  | S01: chốt các ADR còn đề xuất theo ủy quyền của Kiên; ADR-08 đổi sang luôn push; BRD mục 9 theo ADR-11                                               |
 | 23/11/2026 | Kiên         | D5: chỉ dùng Gemini API (`gemini-embedding-2`), bỏ Groq, Jina; sửa ADR-02, 04 §4.6, BRD, `AGENTS.md`, `setup.md`                                     |
+| 23/11/2026 | AI (Claude)  | Kiểm `server/.env`: đủ biến; Storage, Gemini (U3), Groq (U8) gọi thật thành công                                                                     |
 | 23/11/2026 | AI (Claude)  | S06: thêm thư viện 8.1 + plugin; S10: `FakeFirebaseIdp` cho X23                                                                                      |
 | 23/11/2026 | Kiên         | D11 (Groq `qwen/qwen3.8-27b` mô tả ảnh), D12 (bỏ S08), D13 (chấp nhận các giả định U), D6 (ADR-09 chốt); sửa ADR-02, 04, 07, 01, 02, BRD, `setup.md` |
 | 22/11/2026 | Kiên         | S05: Firebase Auth (Google), SHA-1, `google-services.json`, project EAS; U18 đối chiếu tài liệu                                                      |
