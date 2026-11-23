@@ -29,9 +29,9 @@ Trên Render không dùng file này, đặt biến ở mục Environment bên d�
   - `SPRING_PROFILES_ACTIVE=prod`
   - `DATABASE_URL` (chuỗi JDBC session pooler tới Supabase Postgres), `DATABASE_USERNAME`, `DATABASE_PASSWORD`
   - `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `SUPABASE_STORAGE_BUCKET=item-images`
-  - `JWT_SECRET` (chuỗi ngẫu nhiên ≥ 32 byte)
+  - `JWT_SECRET` (chuỗi ngẫu nhiên ≥ 32 byte), `JWT_EXPIRATION_MS=604800000` (7 ngày)
   - `FIREBASE_PROJECT_ID` (không bí mật; dùng để kiểm tra `iss`, `aud` của Firebase ID token)
-  - `GEMINI_API_KEY`
+  - `GEMINI_API_KEY`, `GEMINI_EMBEDDING_MODEL=gemini-embedding-2`
   - `GROQ_API_KEY`, `GROQ_VISION_MODEL=qwen/qwen3.8-27b`
 - [ ] Đặt health check path `/api/v1/health`.
 - [ ] Hiểu giới hạn của gói Free: tự tắt sau khoảng 15 phút không có truy cập, khởi động lại chậm, RAM 512 MB. Điền địa chỉ Render vào `EXPO_PUBLIC_API_URL` của bản build thật.
@@ -47,6 +47,7 @@ Trên Render không dùng file này, đặt biến ở mục Environment bên d�
 
 - [ ] Tạo API key ở `console.groq.com` (gói free), đặt vào `GROQ_API_KEY` của server (Render và `server/.env`).
 - [ ] Model `qwen/qwen3.8-27b` đang ở dạng **preview** trên Groq (có thể bị gỡ khi báo trước ngắn): tên model để trong biến `GROQ_VISION_MODEL` để đổi không cần sửa code. Groq lỗi thì tin vẫn được embed, chỉ thiếu mô tả ảnh (ADR-02).
+- [ ] Groq nằm sau Cloudflare: request không có header `User-Agent` hợp lệ (ví dụ mặc định của Python urllib) bị chặn `403 error code: 1010`. `GroqVisionClient` phải đặt `User-Agent` riêng.
 - [ ] Xem hạn mức thật của org ở `console.groq.com/settings/limits` (tài liệu ngày 23/11/2026 ghi 30 request/phút, 1.000 request/ngày cho model này).
 
 ## Firebase (đăng nhập + push notification qua Expo)

@@ -224,6 +224,7 @@ Thêm mục `### <mã việc>` khi xong việc: đã làm khác thiết kế ở
 | 22/11/2026 | AI (Claude)  | S02: sửa BRD v0.2, đề cương, `AGENTS.md`, `docs/setup.md`; chốt D4 (cắt NFC, geofence)                                                               |
 | 22/11/2026 | AI (Claude)  | S01: chốt các ADR còn đề xuất theo ủy quyền của Kiên; ADR-08 đổi sang luôn push; BRD mục 9 theo ADR-11                                               |
 | 23/11/2026 | Kiên         | D5: chỉ dùng Gemini API (`gemini-embedding-2`), bỏ Groq, Jina; sửa ADR-02, 04 §4.6, BRD, `AGENTS.md`, `setup.md`                                     |
+| 23/11/2026 | AI (Claude)  | Kiểm `server/.env`: đủ biến; Storage, Gemini (U3), Groq (U8) gọi thật thành công                                                                     |
 | 23/11/2026 | AI (Claude)  | S06: thêm thư viện 8.1 + plugin; S10: `FakeFirebaseIdp` cho X23                                                                                      |
 | 23/11/2026 | Kiên         | D11 (Groq `qwen/qwen3.8-27b` mô tả ảnh), D12 (bỏ S08), D13 (chấp nhận các giả định U), D6 (ADR-09 chốt); sửa ADR-02, 04, 07, 01, 02, BRD, `setup.md` |
 | 22/11/2026 | Kiên         | S05: Firebase Auth (Google), SHA-1, `google-services.json`, project EAS; U18 đối chiếu tài liệu                                                      |
