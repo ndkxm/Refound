@@ -49,12 +49,45 @@ const config: ExpoConfig = {
         imageWidth: 76,
       },
     ],
+    '@maplibre/maplibre-react-native',
+    'expo-secure-store',
+    '@react-native-firebase/app',
+    '@react-native-firebase/auth',
+    '@react-native-google-signin/google-signin',
+    [
+      'expo-location',
+      {
+        locationWhenInUsePermission:
+          'Refound dùng vị trí để ghi nơi bạn nhặt được hoặc làm mất đồ.',
+      },
+    ],
+    [
+      'expo-camera',
+      {
+        cameraPermission: 'Refound dùng camera để quét mã QR khi bàn giao đồ.',
+        recordAudioAndroid: false,
+      },
+    ],
+    [
+      'expo-image-picker',
+      {
+        photosPermission: 'Refound cần truy cập ảnh để bạn đính kèm ảnh đồ vật.',
+        cameraPermission: 'Refound dùng camera để chụp ảnh đồ vật.',
+        microphonePermission: false,
+      },
+    ],
   ],
   experiments: {
     typedRoutes: true,
     reactCompiler: true,
   },
-  // projectId của EAS sẽ do `npx eas-cli init` ghi vào đây (xem docs/setup.md).
+  // EAS không tự ghi được vào file .ts nên điền tay; projectId không phải bí mật.
+  owner: 'kiennd711',
+  extra: {
+    eas: {
+      projectId: 'dd47f66d-8c76-4cb4-a414-6e9bf8c01879',
+    },
+  },
 };
 
 export default config;
