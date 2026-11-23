@@ -89,6 +89,11 @@ public final class ItemRules {
         return stripped.isEmpty() ? null : stripped;
     }
 
+    /** Cho {@code PATCH}: null là không sửa; có gửi thì bỏ NUL và khoảng trắng đầu cuối, rỗng vẫn giữ để báo lỗi độ dài. */
+    public static String normalize(String s) {
+        return s == null ? null : s.replace("\u0000", "").strip();
+    }
+
     private static void length(List<FieldError> errors, String field, String value, int min, int max, String message) {
         int n = value == null ? 0 : value.codePointCount(0, value.length());
         if (n < min || n > max) {
