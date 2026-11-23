@@ -47,6 +47,12 @@ public class SupabaseStorageClient implements StorageClient {
     }
 
     @Override
+    public byte[] download(String path) {
+        byte[] bytes = http.get().uri("/object/{bucket}/{path}", bucket, path).retrieve().body(byte[].class);
+        return bytes == null ? new byte[0] : bytes;
+    }
+
+    @Override
     public Map<String, String> signedUrls(Collection<String> paths, Duration ttl) {
         if (paths.isEmpty()) {
             return Map.of();

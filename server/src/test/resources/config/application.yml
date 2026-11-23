@@ -9,3 +9,12 @@ refound:
     url: http://127.0.0.1:9
     key: test
     bucket: test
+  ai:
+    gemini:
+      url: http://127.0.0.1:9
+      key: test # bean thật vẫn được tạo; test dùng FakeEmbeddingClient (@Primary)
+    groq:
+      url: http://127.0.0.1:9
+      key: ""
+  embedding:
+    enabled: false # test gọi EmbeddingJob.runOnce() trực tiếp, không để luồng nền chạy chen

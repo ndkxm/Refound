@@ -37,7 +37,9 @@ class CoreP0MigrationIT {
                 "insert into refound.item_embeddings (item_id, source, model, embedding) values (?, 'text', 'm', ?::extensions.vector)",
                 item,
                 zeroVector(768));
-        assertThat(jdbc.queryForObject("select count(*) from refound.item_embeddings", Integer.class)).isEqualTo(1);
+        // đếm theo tin của test này: test khác có thể đã ghi vector vào cùng DB
+        assertThat(jdbc.queryForObject("select count(*) from refound.item_embeddings where item_id = ?", Integer.class, item))
+                .isEqualTo(1);
     }
 
     // Mỗi ca một transaction riêng: Postgres hủy cả transaction sau câu lỗi đầu tiên.

@@ -3,6 +3,7 @@ package com.refound.auth.application;
 import com.refound.auth.domain.User;
 import com.refound.auth.infrastructure.UserRepository;
 import com.refound.common.ApiException;
+import com.refound.common.Jpeg;
 import com.refound.common.storage.StorageClient;
 import java.time.Duration;
 import java.util.List;
@@ -46,7 +47,7 @@ public class ProfileService {
         if (jpeg.length > MAX_AVATAR_BYTES) { // Tomcat chặn trước ở max-file-size; đây là lớp thứ hai
             throw new ApiException(HttpStatus.PAYLOAD_TOO_LARGE, "PAYLOAD_TOO_LARGE", "Ảnh quá lớn (tối đa 1 MB).");
         }
-        if (!isJpeg(jpeg)) {
+        if (!Jpeg.isJpeg(jpeg)) {
             throw ApiException.validation("Ảnh đại diện phải là ảnh JPEG.");
         }
         String path = "avatars/" + userId + ".jpg"; // ghi đè ảnh cũ, không để lại file rác
@@ -81,10 +82,5 @@ public class ProfileService {
             log.warn("Không ký được URL ảnh đại diện {}", path, e);
             return null;
         }
-    }
-
-    /** JPEG bắt đầu bằng FF D8 FF; không tin Content-Type do app gửi. */
-    static boolean isJpeg(byte[] b) {
-        return b.length >= 3 && (b[0] & 0xFF) == 0xFF && (b[1] & 0xFF) == 0xD8 && (b[2] & 0xFF) == 0xFF;
     }
 }

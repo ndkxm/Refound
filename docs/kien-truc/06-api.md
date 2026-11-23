@@ -36,6 +36,7 @@
 | `ATTEMPT_LIMIT`         | 429  | BR-05                                                                            |
 | `TERMS_NOT_ACCEPTED`    | 403  | Chưa đồng ý điều khoản phiên bản hiện hành (03 §3.5)                             |
 | `AI_UNAVAILABLE`        | 503  | Chỉ khi tìm kiếm **bằng ảnh** mà Gemini lỗi (tìm bằng chữ thì hạ cấp, không lỗi) |
+| `STORAGE_UNAVAILABLE`   | 503  | Không upload được ảnh lên Storage khi đăng tin; DB không ghi gì (7.3)           |
 
 ## 6.2 REST
 
@@ -65,7 +66,7 @@ Cột "Quyền" tham chiếu ma trận ở `03-phan-quyen.md`.
 | Phương thức | Đường dẫn                | Vào                                                                                                                                                           | Ra                                                          | Quyền                         | Mã yêu cầu                  |
 | ----------- | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- | ----------------------------- | --------------------------- |
 | GET         | `/categories`            |                                                                                                                                                               | `[{code, nameVi, sensitive}]`                               | Đăng nhập                     |                             |
-| POST        | `/items?force=`          | multipart: `data` (JSON `{type, category, description, happenedAt, location, radiusM?, question?, answer?}`), `full[]`, `thumb[]` (0–4 mỗi loại, JPEG ≤ 1 MB) | 201 `ItemOwnerDto`                                          | Đăng nhập, BR-09              | FR-ITEM-01, 02, FR-MATCH-04 |
+| POST        | `/items?force=`          | multipart: `data` (chuỗi JSON `{type, category, description, happenedAt, location, radiusM?, question?, answer?}`, không cần Content-Type), `full`, `thumb` (phần lặp lại 0–4 lần, cặp thứ i là ảnh vị trí i; JPEG ≤ 1 MB) | 201 `ItemOwnerDto`                                          | Đăng nhập, BR-09              | FR-ITEM-01, 02, FR-MATCH-04 |
 | GET         | `/items`                 | `?type&category&from&to&bbox=minLng,minLat,maxLng,maxLat&cursor`                                                                                              | trang `ItemSummaryDto` (thumb signed URL, `publicLocation`) | Đăng nhập                     | FR-ITEM-03                  |
 | GET         | `/items/{id}`            |                                                                                                                                                               | `ItemPublicDto` hoặc `ItemOwnerDto` (theo người xem)        | 3.2                           | FR-ITEM-04, 07              |
 | GET         | `/me/items`              | `?status`                                                                                                                                                     | trang `ItemOwnerDto`                                        | Bản thân                      | FR-ITEM-05                  |
