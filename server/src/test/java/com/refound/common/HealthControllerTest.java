@@ -7,6 +7,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.refound.auth.application.JwtIssuer;
+import com.refound.auth.infrastructure.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -17,7 +19,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(HealthController.class)
-@Import(SecurityConfig.class)
+@Import({SecurityConfig.class, JwtIssuer.class, ClockConfig.class})
 class HealthControllerTest {
 
     @Autowired
@@ -25,6 +27,9 @@ class HealthControllerTest {
 
     @MockitoBean
     JdbcTemplate jdbc;
+
+    @MockitoBean
+    UserRepository users;
 
     @Test
     void healthWithoutDbDoesNotTouchDatabase() throws Exception {
@@ -52,6 +57,6 @@ class HealthControllerTest {
 
     @Test
     void otherEndpointsNeedAuth() throws Exception {
-        mvc.perform(get("/api/v1/items")).andExpect(status().is4xxClientError());
+        mvc.perform(get("/api/v1/items")).andExpect(status().isUnauthorized());
     }
 }

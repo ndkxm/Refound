@@ -1,0 +1,11 @@
+# Giá trị cho test, đè lên application.yml và server/.env. Không phải bí mật thật.
+refound:
+  jwt:
+    secret: test-secret-test-secret-test-secret-0123456789
+  firebase:
+    project-id: refound-test
+    jwks-uri: http://127.0.0.1:9/jwks # test cần Firebase thì trỏ vào FakeFirebaseIdp
+  storage:
+    url: http://127.0.0.1:9
+    key: test
+    bucket: test

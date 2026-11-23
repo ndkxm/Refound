@@ -8,16 +8,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
 /** P0-01: migration V202611230900__core_p0 chạy được, dữ liệu cố định và ràng buộc chính đúng như 02 §2.4. */
-@SpringBootTest
-@Import(TestDatabase.class)
+@IntegrationTest
+
 @Transactional // mỗi test rollback, không để dữ liệu lại cho test khác
 class CoreP0MigrationIT {
 
