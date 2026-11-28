@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Chính sách quyền riêng tư · Refound</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Chính sách quyền riêng tư của Refound</h1>
+      <p class="meta">
+        Có hiệu lực từ 28/11/2026 · <a href="xoa-tai-khoan.html">Xóa tài khoản và dữ liệu</a>
+      </p>
+
+      <p>
+        Refound là ứng dụng giúp sinh viên tìm lại đồ thất lạc trong trường: đăng đồ nhặt được hoặc
+        bị mất kèm ảnh và vị trí, hệ thống tự gợi ý những món có thể khớp, chủ nhân trả lời câu hỏi
+        xác minh trước khi nhận lại đồ. Ứng dụng do
+        <strong>[TÊN NHÓM / NGƯỜI PHÁT TRIỂN]</strong> phát triển trong khuôn khổ đồ án môn học.
+        Liên hệ: <a href="mailto:[EMAIL LIÊN HỆ]">[EMAIL LIÊN HỆ]</a>.
+      </p>
+
+      <h2>1. Dữ liệu chúng tôi thu thập</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Dữ liệu</th>
+            <th>Dùng để</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Mã tài khoản Firebase khi bạn đăng nhập bằng Google</td>
+            <td>
+              Nhận diện bạn. Máy chủ của Refound
+              <strong>không lưu email, số điện thoại hay mật khẩu</strong>.
+            </td>
+          </tr>
+          <tr>
+            <td>Tên hiển thị, ảnh đại diện (nếu bạn tải lên)</td>
+            <td>Hiện cho người khác khi họ xem tin hoặc trao đổi với bạn.</td>
+          </tr>
+          <tr>
+            <td>Tin bạn đăng: loại tin, danh mục, mô tả, ảnh, thời điểm, vị trí, bán kính tìm</td>
+            <td>Hiển thị tin và tự đối chiếu tin mất với tin nhặt được.</td>
+          </tr>
+          <tr>
+            <td>Câu hỏi và đáp án xác minh (tin nhặt được), câu trả lời khi bạn nhận đồ</td>
+            <td>
+              Giúp người nhặt xác định đúng chủ nhân. Chỉ người nhặt và người gửi yêu cầu thấy.
+            </td>
+          </tr>
+          <tr>
+            <td>Yêu cầu nhận đồ, tin nhắn chat, lịch sử bàn giao, báo cáo vi phạm, điểm uy tín</td>
+            <td>Trao đổi để trả đồ, chống gian lận và xử lý vi phạm.</td>
+          </tr>
+          <tr>
+            <td>Vị trí của thiết bị (chỉ khi bạn cho phép và đang đăng tin hoặc tìm kiếm)</td>
+            <td>Điền sẵn vị trí cho tin. Ứng dụng không theo dõi vị trí khi chạy nền.</td>
+          </tr>
+          <tr>
+            <td>Mã thông báo đẩy (push token) của thiết bị</td>
+            <td>
+              Gửi thông báo về món có thể khớp, yêu cầu nhận đồ và tin nhắn. Tắt từng loại được
+              trong ứng dụng.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <p>Chúng tôi không dùng dữ liệu của bạn cho quảng cáo và không bán dữ liệu.</p>
+
+      <h2>2. Ai thấy dữ liệu của bạn</h2>
+      <ul>
+        <li>
+          Tin đăng, ảnh, tên hiển thị và điểm uy tín hiện cho người dùng khác trong ứng dụng. Với
+          tin <em>nhặt được</em>, vị trí chỉ hiện ở mức gần đúng (làm tròn khoảng 100 m); vị trí
+          chính xác chỉ hiện cho người được bạn chấp nhận trả đồ.
+        </li>
+        <li>
+          Ảnh của các loại giấy tờ (thẻ sinh viên, căn cước, thẻ ngân hàng) chỉ hiện cho người được
+          chấp nhận, và không được gửi cho dịch vụ AI.
+        </li>
+        <li>Câu hỏi, đáp án xác minh và tin nhắn chat chỉ hiện cho đúng hai người liên quan.</li>
+        <li>Quản trị viên của ứng dụng xem được tin và yêu cầu bị báo cáo để xử lý vi phạm.</li>
+        <li>Email và số điện thoại của bạn không bao giờ hiện cho người dùng khác.</li>
+      </ul>
+
+      <h2>3. Dịch vụ bên thứ ba xử lý dữ liệu</h2>
+      <ul>
+        <li><strong>Google Firebase</strong>: đăng nhập bằng Google.</li>
+        <li>
+          <strong>Expo</strong> và <strong>Firebase Cloud Messaging</strong>: chuyển thông báo đẩy
+          tới thiết bị.
+        </li>
+        <li>
+          <strong>Supabase</strong>: lưu cơ sở dữ liệu và ảnh (máy chủ tại Ấn Độ). Ảnh chỉ đọc được
+          qua đường dẫn tạm thời có hạn 1 giờ.
+        </li>
+        <li><strong>Render</strong>: chạy máy chủ của ứng dụng (máy chủ tại Singapore).</li>
+        <li>
+          <strong>Google Gemini API</strong>: nhận ảnh và mô tả của tin (trừ ảnh giấy tờ) để tạo dữ
+          liệu đối chiếu. Ứng dụng dùng gói miễn phí; theo điều khoản của gói này,
+          <strong>Google có thể dùng nội dung gửi lên để cải thiện sản phẩm của Google</strong>
+          và người của Google có thể xem nội dung đó. Đừng chụp thông tin cá nhân không cần thiết
+          vào ảnh.
+        </li>
+        <li>
+          <strong>Groq</strong>: nhận ảnh của tin (trừ ảnh giấy tờ) để tạo mô tả ngắn phục vụ đối
+          chiếu. Mô tả này không hiện cho người dùng.
+        </li>
+      </ul>
+
+      <h2>4. Lưu trữ và xóa</h2>
+      <ul>
+        <li>
+          Tin không có hoạt động trong 30 ngày sẽ hết hạn và không còn hiện công khai; bạn gia hạn
+          lại được.
+        </li>
+        <li>
+          Bạn xóa được tài khoản ngay trong ứng dụng. Cách làm và dữ liệu bị xóa xem ở
+          <a href="xoa-tai-khoan.html">trang xóa tài khoản</a>.
+        </li>
+        <li>Dữ liệu được truyền qua kết nối mã hóa (HTTPS).</li>
+      </ul>
+
+      <h2>5. Trẻ em</h2>
+      <p>Ứng dụng dành cho sinh viên, không hướng tới trẻ em dưới 13 tuổi.</p>
+
+      <h2>6. Thay đổi chính sách</h2>
+      <p>Khi chính sách thay đổi, chúng tôi cập nhật trang này và ngày hiệu lực ở đầu trang.</p>
+    </main>
+  </body>
+</html>
