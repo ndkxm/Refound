@@ -1,13 +1,19 @@
 import { Text } from 'react-native';
 
-import { Screen } from '@/components/ui';
+import { Button, Screen } from '@/components/ui';
+import { signOut } from '@/features/auth/hooks/use-auth';
+import { useAuthStore } from '@/stores/auth-store';
 
-// Màn tạm, P0-03 thay bằng khung điều hướng.
-export default function Index() {
+// Màn tạm sau đăng nhập; P0-08 thay bằng các tab (bản đồ, tìm kiếm, đăng tin…).
+export default function Home() {
+  const name = useAuthStore((s) => s.user?.displayName);
+
   return (
-    <Screen className="items-center justify-center gap-2 px-6">
-      <Text className="text-display font-bold text-brand-700 dark:text-brand-400">Refound</Text>
-      <Text className="text-label text-neutral-500 dark:text-neutral-400">Khung dự án</Text>
+    <Screen className="items-center justify-center gap-4 px-6">
+      <Text className="text-title font-semibold text-neutral-900 dark:text-neutral-100">
+        Xin chào, {name}
+      </Text>
+      <Button title="Đăng xuất" variant="secondary" onPress={() => void signOut()} />
     </Screen>
   );
 }
