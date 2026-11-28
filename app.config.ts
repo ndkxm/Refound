@@ -49,6 +49,14 @@ const config: ExpoConfig = {
         imageWidth: 76,
       },
     ],
+    [
+      'expo-build-properties',
+      {
+        // firebase-auth 25 (BOM 35, kéo theo @react-native-firebase 27) biên dịch bằng Kotlin 2.4;
+        // Kotlin mặc định của SDK 58 là 2.2 không đọc được. 2.3.x đọc được metadata 2.4.
+        android: { kotlinVersion: '2.3.21' },
+      },
+    ],
     '@maplibre/maplibre-react-native',
     'expo-secure-store',
     '@react-native-firebase/app',

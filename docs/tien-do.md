@@ -196,6 +196,8 @@ Thêm mục `### <mã việc>` khi xong việc: đã làm khác thiết kế ở
 
 - 23/11/2026: cài bằng `npx expo install` mọi gói ở 8.1, thêm `@tanstack/react-query-persist-client` (cần cho persist cache). `npx expo install --check` báo khớp SDK 58; `npx expo config --type prebuild` nhận đủ plugin.
 - 23/11/2026 (sau): thêm `expo-device`, `@react-native-community/netinfo`, `react-native-keyboard-controller` (rà P0–P2 thấy còn thiếu, tránh build lại). `react-native-view-shot` + `expo-sharing` cho FR-TAG-01 (P2) chưa cài.
+- 23/11/2026: build EAS đầu tiên lỗi `:react-native-firebase_auth:compileDebugKotlin`: `firebase-auth` 25 (BOM 35.0.2 của `@react-native-firebase` 27.1.1) biên dịch bằng Kotlin 2.4, SDK 58 mặc định Kotlin 2.2. Sửa bằng `expo-build-properties` đặt `android.kotlinVersion: '2.3.21'` (Expo hỗ trợ Kotlin ≥ 2.3).
+- 23/11/2026: `eas.json` thêm `environment` (biến môi trường EAS) cho cả ba profile; `preview` và `production` build APK để cài thẳng lên máy (R05 sẽ đổi `production` sang AAB cho CH Play). `server/.gitignore` thêm `.env`.
 - Plugin trong `app.config.ts`: MapLibre, secure-store, `@react-native-firebase/app` + `auth`, google-signin, `expo-location` / `expo-camera` / `expo-image-picker` (chuỗi xin quyền tiếng Việt, tắt micro).
 - **Chưa cài `openapi-typescript`**: bản 7.13 đòi peer `typescript@^5`, repo dùng TypeScript 6. Khi cần sinh `src/types/api.d.ts` thì chạy `npx openapi-typescript@7 …` không cài vào repo.
 - npm chặn script postinstall của `@firebase/util`, `protobufjs` (chính sách install-scripts mới của npm); chưa thấy ảnh hưởng, nếu build lỗi thì `npm install-scripts approve <gói>`.
