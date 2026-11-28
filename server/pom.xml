@@ -101,6 +101,10 @@
             <exclude>**/*IT.java</exclude>
             <exclude>**/*AccessTest.java</exclude>
           </excludes>
+          <!-- MatchingEvalTest chỉ chạy khi gọi -Dgroups=eval (04 §4.6) -->
+          <systemPropertyVariables>
+            <refound.groups>${groups}</refound.groups>
+          </systemPropertyVariables>
         </configuration>
       </plugin>
       <plugin>
